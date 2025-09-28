@@ -1,0 +1,1714 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CarePod: Telemedicine Kiosk System</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        
+        .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
+        
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .nav-tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .tab {
+            background: rgba(255,255,255,0.1);
+            border: none;
+            padding: 12px 24px;
+            color: white;
+            cursor: pointer;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+        
+        .tab:hover, .tab.active {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+        
+        .content-section {
+            display: none;
+            background: rgba(255,255,255,0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .content-section.active { display: block; }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .card {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            padding: 20px;
+            border-radius: 15px;
+            color: white;
+            text-align: center;
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .card:hover { transform: scale(1.05); }
+        
+        .card h3 { font-size: 1.3em; margin-bottom: 10px; }
+        .card p { font-size: 0.9em; }
+        
+        .flow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .flow-node {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            padding: 15px 20px;
+            border-radius: 10px;
+            color: #333;
+            font-weight: bold;
+        }
+        
+        .flow-arrow { font-size: 2em; color: #667eea; }
+        
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .metric {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+        }
+        
+        .metric-value { font-size: 2em; font-weight: bold; margin-bottom: 5px; }
+        .metric-label { font-size: 0.9em; opacity: 0.9; }
+        
+        .steps {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .step {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            min-width: 200px;
+            text-align: center;
+            flex: 1;
+        }
+        
+        .step-number {
+            background: rgba(255,255,255,0.3);
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px;
+            font-weight: bold;
+        }
+        
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .tech-category {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+        }
+        
+        .tech-list { list-style: none; }
+        
+        .tech-list li {
+            background: rgba(255,255,255,0.2);
+            margin: 5px 0;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 0.9em;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .feature-card {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            padding: 20px;
+            border-radius: 15px;
+            color: #333;
+        }
+        
+        .feature-list { list-style: none; }
+        
+        .feature-list li {
+            padding: 5px 0;
+            border-bottom: 1px solid rgba(102, 126, 234, 0.1);
+        }
+        
+        .feature-list li:before {
+            content: "✓ ";
+            color: #667eea;
+            font-weight: bold;
+        }
+        
+        .integration-layout {
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr;
+            gap: 30px;
+            margin: 30px 0;
+        }
+        
+        .integration-side { display: flex; flex-direction: column; gap: 15px; }
+        
+        .integration-item {
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            color: white;
+        }
+        
+        .integration-center {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+        }
+        
+        @media (max-width: 768px) {
+            .integration-layout { grid-template-columns: 1fr; }
+            .steps { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>🏥 CarePod: Telemedicine Kiosk Solution</h1>
+            <p>Comprehensive Healthcare Solution with IoT Integration</p>
+        </header>
+
+        <nav class="nav-tabs">
+            <button class="tab active" onclick="showSection('overview')">Overview</button>
+            <button class="tab" onclick="showSection('architecture')">Architecture</button>
+            <button class="tab" onclick="showSection('workflow')">Patient Workflow</button>
+            <button class="tab" onclick="showSection('doctor-workflow')">Doctor Workflow</button>
+            <button class="tab" onclick="showSection('pharmacy-workflow')">Pharmacy Workflow</button>
+            <button class="tab" onclick="showSection('lis-middleware')">LIS Middleware</button>
+            <button class="tab" onclick="showSection('technology')">Technology</button>
+            <button class="tab" onclick="showSection('applications')">Applications</button>
+            <button class="tab" onclick="showSection('integration')">Integration</button>
+            <button class="tab" onclick="showSection('timeline')">Timeline</button>
+            <button class="tab" onclick="showSection('metrics')">Metrics</button>
+        </nav>
+
+        <section id="overview" class="content-section active">
+            <h2 style="text-align: center; margin-bottom: 30px; color: #667eea;">System Overview</h2>
+            
+            <div class="grid">
+                <div class="card">
+                    <h3>🏥 Smart Kiosk</h3>
+                    <p>Interactive healthcare station with integrated medical devices</p>
+                </div>
+                <div class="card">
+                    <h3>📱 Patient App</h3>
+                    <p>Mobile healthcare management with telemedicine features</p>
+                </div>
+                <div class="card">
+                    <h3>👨‍⚕️ Doctor Portal</h3>
+                    <p>Professional dashboard for consultations and prescriptions</p>
+                </div>
+                <div class="card">
+                    <h3>💊 Pharmacy System</h3>
+                    <p>Prescription fulfillment and medication management</p>
+                </div>
+                <div class="card">
+                    <h3>🛡️ Insurance Integration</h3>
+                    <p>Coverage verification and claims processing</p>
+                </div>
+                <div class="card">
+                    <h3>🔬 Laboratory Integration</h3>
+                    <p>LIS middleware for test ordering and results</p>
+                </div>
+            </div>
+
+            <div class="flow">
+                <div class="flow-node">Patient</div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-node">Kiosk</div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-node">Cloud</div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-node">Doctor</div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-node">Pharmacy</div>
+            </div>
+
+            <div class="metrics">
+                <div class="metric">
+                    <div class="metric-value">99.9%</div>
+                    <div class="metric-label">System Uptime</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-value">&lt;2s</div>
+                    <div class="metric-label">Response Time</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-value">24/7</div>
+                    <div class="metric-label">Availability</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-value">HIPAA</div>
+                    <div class="metric-label">Compliant</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- LIS Middleware Section -->
+        <section id="lis-middleware" class="content-section">
+            <h2 style="text-align: center; margin-bottom: 30px; color: #667eea;">LIS Middleware & Laboratory Integration</h2>
+            
+            <!-- LIS Architecture Diagram -->
+            <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; border-radius: 15px; margin-bottom: 30px;">
+                <h3 style="text-align: center; margin-bottom: 25px;">🔬 LIS Middleware Architecture</h3>
+                
+                <!-- Top Layer: Telemedicine Platform -->
+                <div style="background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px; margin-bottom: 20px; text-align: center;">
+                    <h4 style="margin-bottom: 15px;">📱 Telemedicine Platform Layer</h4>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px;">
+                        <div style="background: rgba(255,255,255,0.2); padding: 10px; border-radius: 5px; font-size: 0.9em;">Doctor Portal</div>
+                        <div style="background: rgba(255,255,255,0.2); padding: 10px; border-radius: 5px; font-size: 0.9em;">Patient App</div>
+                        <div style="background: rgba(255,255,255,0.2); padding: 10px; border-radius: 5px; font-size: 0.9em;">Kiosk System</div>
+                        <div style="background: rgba(255,255,255,0.2); padding: 10px; border-radius: 5px; font-size: 0.9em;">EMR Integration</div>
+                    </div>
+                </div>
+
+                <!-- Data Flow Arrows -->
+                <div style="text-align: center; margin: 15px 0;">
+                    <div style="font-size: 1.5em;">⬇️ HL7 FHIR / REST APIs ⬇️</div>
+                </div>
+
+                <!-- Middle Layer: LIS Middleware -->
+                <div style="background: rgba(255,255,255,0.15); padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+                    <h4 style="text-align: center; margin-bottom: 15px;">⚙️ LIS Middleware Core Engine</h4>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                        <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 8px;">
+                            <h5>📋 Order Management</h5>
+                            <ul style="font-size: 0.8em; margin: 5px 0; padding-left: 15px;">
+                                <li>Test ordering workflow</li>
+                                <li>Priority assignment</li>
+                                <li>Specimen tracking</li>
+                            </ul>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 8px;">
+                            <h5>🔄 Protocol Translation</h5>
+                            <ul style="font-size: 0.8em; margin: 5px 0; padding-left: 15px;">
+                                <li>HL7 v2.x to FHIR</li>
+                                <li>LOINC code mapping</li>
+                                <li>Format standardization</li>
+                            </ul>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 8px;">
+                            <h5>📊 Result Processing</h5>
+                            <ul style="font-size: 0.8em; margin: 5px 0; padding-left: 15px;">
+                                <li>Data validation</li>
+                                <li>Reference range checking</li>
+                                <li>Critical value alerting</li>
+                            </ul>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 8px;">
+                            <h5>🔐 Security & Compliance</h5>
+                            <ul style="font-size: 0.8em; margin: 5px 0; padding-left: 15px;">
+                                <li>HIPAA compliance</li>
+                                <li>Audit logging</li>
+                                <li>Access control</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Data Flow Arrows -->
+                <div style="text-align: center; margin: 15px 0;">
+                    <div style="font-size: 1.5em;">⬇️ HL7 v2.x / TCP/IP ⬇️</div>
+                </div>
+
+                <!-- Bottom Layer: Laboratory Systems -->
+                <div style="background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px;">
+                    <h4 style="text-align: center; margin-bottom: 15px;">🏥 Laboratory Systems Layer</h4>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px;">
+                        <div style="background: rgba(255,255,255,0.2); padding: 10px; border-radius: 5px; font-size: 0.9em;">Quest Diagnostics</div>
+                        <div style="background: rgba(255,255,255,0.2); padding: 10px; border-radius: 5px; font-size: 0.9em;">LabCorp</div>
+                        <div style="background: rgba(255,255,255,0.2); padding: 10px; border-radius: 5px; font-size: 0.9em;">Hospital Labs</div>
+                        <div style="background: rgba(255,255,255,0.2); padding: 10px; border-radius: 5px; font-size: 0.9em;">Reference Labs</div>
+                        <div style="background: rgba(255,255,255,0.2); padding: 10px; border-radius: 5px; font-size: 0.9em;">Point-of-Care</div>
+                        <div style="background: rgba(255,255,255,0.2); padding: 10px; border-radius: 5px; font-size: 0.9em;">Imaging Centers</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Data Flow Process -->
+            <div style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; padding: 30px; border-radius: 15px; margin-bottom: 30px;">
+                <h3 style="text-align: center; margin-bottom: 25px;">🔄 Laboratory Data Flow Process</h3>
+                
+                <!-- Bidirectional Flow Diagram -->
+                <div style="display: grid; grid-template-columns: 1fr auto 1fr auto 1fr auto 1fr; gap: 15px; align-items: center; margin: 20px 0;">
+                    <!-- Doctor Order -->
+                    <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 10px; text-align: center;">
+                        <div style="font-size: 2em; margin-bottom: 5px;">👨‍⚕️</div>
+                        <h5>Doctor Orders Test</h5>
+                        <p style="font-size: 0.8em;">via Telemedicine Portal</p>
+                    </div>
+                    
+                    <!-- Arrow 1 -->
+                    <div style="font-size: 1.5em; color: #ffd700;">→</div>
+                    
+                    <!-- LIS Middleware -->
+                    <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 10px; text-align: center;">
+                        <div style="font-size: 2em; margin-bottom: 5px;">⚙️</div>
+                        <h5>LIS Middleware</h5>
+                        <p style="font-size: 0.8em;">Order Processing & Routing</p>
+                    </div>
+                    
+                    <!-- Arrow 2 -->
+                    <div style="font-size: 1.5em; color: #ffd700;">→</div>
+                    
+                    <!-- Laboratory -->
+                    <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 10px; text-align: center;">
+                        <div style="font-size: 2em; margin-bottom: 5px;">🔬</div>
+                        <h5>Laboratory</h5>
+                        <p style="font-size: 0.8em;">Test Execution & Analysis</p>
+                    </div>
+                    
+                    <!-- Arrow 3 -->
+                    <div style="font-size: 1.5em; color: #ffd700;">→</div>
+                    
+                    <!-- Results -->
+                    <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 10px; text-align: center;">
+                        <div style="font-size: 2em; margin-bottom: 5px;">📊</div>
+                        <h5>Results Delivery</h5>
+                        <p style="font-size: 0.8em;">to Doctor & Patient</p>
+                    </div>
+                </div>
+
+                <!-- Return Flow -->
+                <div style="text-align: center; margin: 15px 0;">
+                    <div style="background: rgba(255,255,255,0.1); padding: 10px; border-radius: 8px; display: inline-block;">
+                        <strong>← Return Flow: Results, Status Updates, Critical Values →</strong>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Laboratory Test Categories -->
+            <div style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); color: white; padding: 30px; border-radius: 15px; margin-bottom: 30px;">
+                <h3 style="text-align: center; margin-bottom: 25px;">🧪 Supported Laboratory Test Categories</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+                    <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px;">
+                        <h4>🩸 Hematology</h4>
+                        <ul style="margin: 10px 0; padding-left: 20px; font-size: 0.9em;">
+                            <li>Complete Blood Count (CBC)</li>
+                            <li>Blood differential</li>
+                            <li>Coagulation studies (PT/INR, PTT)</li>
+                            <li>ESR, Reticulocyte count</li>
+                            <li>Blood typing & crossmatch</li>
+                        </ul>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px;">
+                        <h4>🧬 Clinical Chemistry</h4>
+                        <ul style="margin: 10px 0; padding-left: 20px; font-size: 0.9em;">
+                            <li>Comprehensive metabolic panel</li>
+                            <li>Liver function tests</li>
+                            <li>Kidney function tests</li>
+                            <li>Lipid panels</li>
+                            <li>Cardiac markers (Troponin, CK-MB)</li>
+                        </ul>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px;">
+                        <h4>🦠 Microbiology</h4>
+                        <ul style="margin: 10px 0; padding-left: 20px; font-size: 0.9em;">
+                            <li>Culture & sensitivity testing</li>
+                            <li>Bacterial identification</li>
+                            <li>Antibiotic susceptibility</li>
+                            <li>Rapid antigen tests</li>
+                            <li>Molecular diagnostics (PCR)</li>
+                        </ul>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px;">
+                        <h4>🔬 Urinalysis</h4>
+                        <ul style="margin: 10px 0; padding-left: 20px; font-size: 0.9em;">
+                            <li>Complete urinalysis</li>
+                            <li>Urine microscopy</li>
+                            <li>Protein quantification</li>
+                            <li>Drug screening</li>
+                            <li>Pregnancy testing</li>
+                        </ul>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px;">
+                        <h4>🧪 Immunology & Serology</h4>
+                        <ul style="margin: 10px 0; padding-left: 20px; font-size: 0.9em;">
+                            <li>Infectious disease serology</li>
+                            <li>Autoimmune markers</li>
+                            <li>Tumor markers</li>
+                            <li>Allergy testing (IgE)</li>
+                            <li>Immunodeficiency panels</li>
+                        </ul>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px;">
+                        <h4>🧬 Molecular Diagnostics</h4>
+                        <ul style="margin: 10px 0; padding-left: 20px; font-size: 0.9em;">
+                            <li>PCR-based testing</li>
+                            <li>Genetic sequencing</li>
+                            <li>Pharmacogenomics</li>
+                            <li>Viral load monitoring</li>
+                            <li>Oncology genomics</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Integration Standards & Protocols -->
+            <div style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); color: white; padding: 30px; border-radius: 15px; margin-bottom: 30px;">
+                <h3 style="text-align: center; margin-bottom: 25px;">📋 Integration Standards & Protocols</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+                    <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px;">
+                        <h4>🔄 HL7 Standards Implementation</h4>
+                        <ul style="margin: 10px 0; padding-left: 20px; font-size: 0.9em;">
+                            <li>HL7 v2.x (ADT, ORM, ORU messages)</li>
+                            <li>HL7 FHIR R4 compliance</li>
+                            <li>Message acknowledgment handling</li>
+                            <li>Error handling & retry logic</li>
+                            <li>Real-time & batch processing</li>
+                        </ul>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px;">
+                        <h4>🏷️ Coding Standards</h4>
+                        <ul style="margin: 10px 0; padding-left: 20px; font-size: 0.9em;">
+                            <li>LOINC for laboratory tests</li>
+                            <li>SNOMED CT for clinical terms</li>
+                            <li>ICD-10 for diagnostic codes</li>
+                            <li>CPT for procedure codes</li>
+                            <li>Custom lab code mapping</li>
+                        </ul>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px;">
+                        <h4>🔐 Security & Privacy</h4>
+                        <ul style="margin: 10px 0; padding-left: 20px; font-size: 0.9em;">
+                            <li>HIPAA compliance framework</li>
+                            <li>End-to-end encryption</li>
+                            <li>Role-based access control</li>
+                            <li>Audit trail logging</li>
+                            <li>Data de-identification protocols</li>
+                        </ul>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px;">
+                        <h4>📡 Communication Protocols</h4>
+                        <ul style="margin: 10px 0; padding-left: 20px; font-size: 0.9em;">
+                            <li>TCP/IP socket connections</li>
+                            <li>HTTPS RESTful APIs</li>
+                            <li>MLLP (Minimal Lower Layer Protocol)</li>
+                            <li>WebSocket for real-time updates</li>
+                            <li>SFTP for batch file transfers</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quality Assurance & Monitoring -->
+            <div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; padding: 30px; border-radius: 15px; margin-bottom: 30px;">
+                <h3 style="text-align: center; margin-bottom: 25px;">✅ Quality Assurance & Monitoring</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+                    <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px;">
+                        <h4>📊 Data Validation</h4>
+                        <ul style="margin: 10px 0; padding-left: 20px; font-size: 0.9em;">
+                            <li>Reference range verification</li>
+                            <li>Critical value detection</li>
+                            <li>Data format validation</li>
+                            <li>Completeness checking</li>
+                            <li>Duplicate result detection</li>
+                        </ul>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px;">
+                        <h4>⚠️ Alert Management</h4>
+                        <ul style="margin: 10px 0; padding-left: 20px; font-size: 0.9em;">
+                            <li>Critical value notifications</li>
+                            <li>Abnormal result flagging</li>
+                            <li>Delta check alerts</li>
+                            <li>System error notifications</li>
+                            <li>Escalation protocols</li>
+                        </ul>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px;">
+                        <h4>📈 Performance Monitoring</h4>
+                        <ul style="margin: 10px 0; padding-left: 20px; font-size: 0.9em;">
+                            <li>Message processing times</li>
+                            <li>System availability tracking</li>
+                            <li>Error rate monitoring</li>
+                            <li>Throughput analysis</li>
+                            <li>SLA compliance reporting</li>
+                        </ul>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px;">
+                        <h4>🔍 Audit & Compliance</h4>
+                        <ul style="margin: 10px 0; padding-left: 20px; font-size: 0.9em;">
+                            <li>Complete audit trail</li>
+                            <li>Regulatory compliance tracking</li>
+                            <li>Change log maintenance</li>
+                            <li>User access logging</li>
+                            <li>Data integrity verification</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Integration Benefits -->
+            <div style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); color: #333; padding: 30px; border-radius: 15px;">
+                <h3 style="text-align: center; margin-bottom: 25px; color: #667eea;">🎯 LIS Integration Benefits</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+                    <div style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                        <h4 style="color: #667eea; margin-bottom: 10px;">⚡ Operational Efficiency</h4>
+                        <ul style="margin: 10px 0; padding-left: 20px; font-size: 0.9em;">
+                            <li>Automated order processing</li>
+                            <li>Reduced manual data entry</li>
+                            <li>Faster result delivery</li>
+                            <li>Streamlined workflows</li>
+                            <li>Error reduction</li>
+                        </ul>
+                    </div>
+                    <div style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                        <h4 style="color: #667eea; margin-bottom: 10px;">🩺 Clinical Benefits</h4>
+                        <ul style="margin: 10px 0; padding-left: 20px; font-size: 0.9em;">
+                            <li>Real-time result access</li>
+                            <li>Improved diagnostic accuracy</li>
+                            <li>Critical value alerts</li>
+                            <li>Trend analysis capabilities</li>
+                            <li>Clinical decision support</li>
+                        </ul>
+                    </div>
+                    <div style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                        <h4 style="color: #667eea; margin-bottom: 10px;">👥 Patient Experience</h4>
+                        <ul style="margin: 10px 0; padding-left: 20px; font-size: 0.9em;">
+                            <li>Faster test results</li>
+                            <li>Reduced wait times</li>
+                            <li>Better care coordination</li>
+                            <li>Transparent status updates</li>
+                            <li>Improved satisfaction</li>
+                        </ul>
+                    </div>
+                    <div style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                        <h4 style="color: #667eea; margin-bottom: 10px;">📈 Business Value</h4>
+                        <ul style="margin: 10px 0; padding-left: 20px; font-size: 0.9em;">
+                            <li>Reduced operational costs</li>
+                            <li>Improved lab utilization</li>
+                            <li>Enhanced scalability</li>
+                            <li>Better resource management</li>
+                            <li>Competitive advantage</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pharmacy Workflow Section -->
+        <section id="pharmacy-workflow" class="content-section">
+            <h2 style="text-align: center; margin-bottom: 30px; color: #667eea;">Pharmacy Workflow & Integration</h2>
+            
+            <!-- Pharmacy Registration Process -->
+            <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; border-radius: 15px; margin-bottom: 30px;">
+                <h3 style="text-align: center; margin-bottom: 25px;">💊 Pharmacy Registration & Onboarding</h3>
+                <div class="steps" style="margin-bottom: 0;">
+                    <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px; flex: 1; margin: 5px; min-width: 200px;">
+                        <div style="background: rgba(255,255,255,0.3); width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; font-weight: bold;">1</div>
+                        <h4>License Verification</h4>
+                        <p>Pharmacy license validation, DEA registration, state compliance verification</p>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px; flex: 1; margin: 5px; min-width: 200px;">
+                        <div style="background: rgba(255,255,255,0.3); width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; font-weight: bold;">2</div>
+                        <h4>System Integration</h4>
+                        <p>PMS integration, inventory system connection, insurance network setup</p>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px; flex: 1; margin: 5px; min-width: 200px;">
+                        <div style="background: rgba(255,255,255,0.3); width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; font-weight: bold;">3</div>
+                        <h4>Platform Training</h4>
+                        <p>E-prescription handling, quality assurance protocols, delivery coordination</p>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px; flex: 1; margin: 5px; min-width: 200px;">
+                        <div style="background: rgba(255,255,255,0.3); width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; font-weight: bold;">4</div>
+                        <h4>Network Activation</h4>
+                        <p>Profile go-live, prescription routing enabled, performance monitoring</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pharmacy Types -->
+            <div style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; padding: 30px; border-radius: 15px; margin-bottom: 30px;">
+                <h3 style="text-align: center; margin-bottom: 25px;">🏪 Supported Pharmacy Types</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+                    <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px;">
+                        <h4>🏢 Chain Pharmacies</h4>
+                        <ul style="margin: 10px 0; padding-left: 20px; font-size: 0.9em;">
+                            <li>CVS, Walgreens, Rite Aid</li>
+                            <li>Walmart, Target Pharmacy</li>
+                            <li>Multiple location management</li>
+                            <li>Corporate integration protocols</li>
+                            <li>Standardized workflows</li>
+                        </ul>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px;">
+                        <h4>🏠 Independent Pharmacies</h4>
+                        <ul style="margin: 10px 0; padding-left: 20px; font-size: 0.9em;">
+                            <li>Local community pharmacies</li>
+                            <li>Personalized patient care</li>
+                            <li>Flexible service offerings</li>
+                            <li>Specialized compounding</li>
+                            <li>Direct patient relationships</li>
+                        </ul>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px;">
+                        <h4>🏥 Hospital Pharmacies</h4>
+                        <ul style="margin: 10px 0; padding-left: 20px; font-size: 0.9em;">
+                            <li>Inpatient medication management</li>
+                            <li>Discharge prescription handling</li>
+                            <li>Clinical pharmacy services</li>
+                            <li>Specialty medication access</li>
+                            <li>Emergency medication protocols</li>
+                        </ul>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px;">
+                        <h4>📦 Mail-Order Pharmacies</h4>
+                        <ul style="margin: 10px 0; padding-left: 20px; font-size: 0.9em;">
+                            <li>Chronic medication management</li>
+                            <li>90-day supply dispensing</li>
+                            <li>Home delivery services</li>
+                            <li>Medication adherence programs</li>
+                            <li>Cost-effective solutions</li>
+                        </ul>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px;">
+                        <h4>🎯 Specialty Pharmacies</h4>
+                        <ul style="margin: 10px 0; padding-left: 20px; font-size: 0.9em;">
+                            <li>High-cost medication handling</li>
+                            <li>Oncology, rare disease drugs</li>
+                            <li>Patient support programs</li>
+                            <li>Prior authorization assistance</li>
+                            <li>Clinical monitoring services</li>
+                        </ul>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px;">
+                        <h4>💊 Compounding Pharmacies</h4>
+                        <ul style="margin: 10px 0; padding-left: 20px; font-size: 0.9em;">
+                            <li>Custom medication preparation</li>
+                            <li>Pediatric formulations</li>
+                            <li>Allergen-free alternatives</li>
+                            <li>Dosage form modifications</li>
+                            <li>Veterinary compounding</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Daily Pharmacy Workflow -->
+            <div style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); color: white; padding: 30px; border-radius: 15px; margin-bottom: 30px;">
+                <h3 style="text-align: center; margin-bottom: 25px;">📋 Daily Pharmacy Workflow</h3>
+                <div class="steps">
+                    <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px; flex: 1; margin: 5px; min-width: 220px;">
+                        <div style="background: rgba(255,255,255,0.3); width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; font-weight: bold;">1</div>
+                        <h4>Prescription Reception</h4>
+                        <p>Real-time e-prescription alerts, queue management, priority assignment</p>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px; flex: 1; margin: 5px; min-width: 220px;">
+                        <div style="background: rgba(255,255,255,0.3); width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; font-weight: bold;">2</div>
+                        <h4>Verification & Processing</h4>
+                        <p>Insurance verification, drug interaction checks, dosage validation</p>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px; flex: 1; margin: 5px; min-width: 220px;">
+                        <div style="background: rgba(255,255,255,0.3); width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; font-weight: bold;">3</div>
+                        <h4>Dispensing & Quality Control</h4>
+                        <p>Medication preparation, final verification, packaging, labeling</p>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px; flex: 1; margin: 5px; min-width: 220px;">
+                        <div style="background: rgba(255,255,255,0.3); width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; font-weight: bold;">4</div>
+                        <h4>Patient Notification & Delivery</h4>
+                        <p>Ready notifications, pickup coordination, delivery scheduling</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Prescription Processing Detail -->
+            <div style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); color: white; padding: 30px; border-radius: 15px; margin-bottom: 30px;">
+                <h3 style="text-align: center; margin-bottom: 25px;">⚕️ Detailed Prescription Processing</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+                    <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px;">
+                        <h4>📥 Prescription Intake</h4>
+                        <ul style="margin: 10px 0; padding-left: 20px; font-size: 0.9em;">
+                            <li>Electronic prescription reception</li>
+                            <li>Patient demographic verification</li>
+                            <li>Prescription authenticity validation</li>
+                            <li>Urgency level assessment</li>
+                            <li>Queue position assignment</li>
+                        </ul>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px;">
+                        <h4>🔍 Clinical Review</h4>
+                        <ul style="margin: 10px 0; padding-left: 20px; font-size: 0.9em;">
+                            <li>Drug interaction screening</li>
+                            <li>Allergy contraindication check</li>
+                            <li>Dosage appropriateness review</li>
+                            <li>Therapeutic duplication analysis</li>
+                            <li>Clinical intervention flagging</li>
+                        </ul>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px;">
+                        <h4>💳 Insurance Processing</h4>
+                        <ul style="margin: 10px 0; padding-left: 20px; font-size: 0.9em;">
+                            <li>Real-time benefit verification</li>
+                            <li>Prior authorization handling</li>
+                            <li>Copay calculation</li>
+                            <li>Alternative therapy suggestions</li>
+                            <li>Claim submission processing</li>
+                        </ul>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px;">
+                        <h4>📦 Fulfillment Options</h4>
+                        <ul style="margin: 10px 0; padding-left: 20px; font-size: 0.9em;">
+                            <li>In-store pickup scheduling</li>
+                            <li>Curbside delivery coordination</li>
+                            <li>Home delivery arrangement</li>
+                            <li>Mail-order processing</li>
+                            <li>Emergency supply provision</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Inventory & Supply Chain -->
+            <div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; padding: 30px; border-radius: 15px; margin-bottom: 30px;">
+                <h3 style="text-align: center; margin-bottom: 25px;">📊 Inventory & Supply Chain Management</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+                    <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px;">
+                        <h4>📈 Automated Inventory Management</h4>
+                        <ul style="margin: 10px 0; padding-left: 20px; font-size: 0.9em;">
+                            <li>Real-time stock level monitoring</li>
+                            <li>Predictive reorder algorithms</li>
+                            <li>Expiration date tracking</li>
+                            <li>Slow-moving drug identification</li>
+                            <li>Emergency stock alerts</li>
+                        </ul>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px;">
+                        <h4>🚚 Supply Chain Integration</h4>
+                        <ul style="margin: 10px 0; padding-left: 20px; font-size: 0.9em;">
+                            <li>Wholesaler API connections</li>
+                            <li>Automated purchase orders</li>
+                            <li>Delivery scheduling optimization</li>
+                            <li>Cost comparison analytics</li>
+                            <li>Shortage mitigation strategies</li>
+                        </ul>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px;">
+                        <h4>📋 Compliance & Reporting</h4>
+                        <ul style="margin: 10px 0; padding-left: 20px; font-size: 0.9em;">
+                            <li>DEA reporting automation</li>
+                            <li>State board compliance tracking</li>
+                            <li>Audit trail maintenance</li>
+                            <li>Controlled substance monitoring</li>
+                            <li>Quality assurance reporting</li>
+                        </ul>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px;">
+                        <h4>💊 Specialty Drug Handling</h4>
+                        <ul style="margin: 10px 0; padding-left: 20px; font-size: 0.9em;">
+                            <li>Cold chain management</li>
+                            <li>High-value drug security</li>
+                            <li>Patient assistance programs</li>
+                            <li>Prior authorization workflow</li>
+                            <li>Specialty distributor integration</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Patient Communication & Services -->
+            <div style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); color: #333; padding: 30px; border-radius: 15px; margin-bottom: 30px;">
+                <h3 style="text-align: center; margin-bottom: 25px; color: #667eea;">📱 Patient Communication & Services</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+                    <div style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                        <h4 style="color: #667eea; margin-bottom: 10px;">📲 Multi-Channel Notifications</h4>
+                        <ul style="margin: 10px 0; padding-left: 20px; font-size: 0.9em;">
+                            <li>SMS prescription ready alerts</li>
+                            <li>Mobile app push notifications</li>
+                            <li>Email status updates</li>
+                            <li>Automated phone calls</li>
+                            <li>Pickup reminder system</li>
+                        </ul>
+                    </div>
+                    <div style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                        <h4 style="color: #667eea; margin-bottom: 10px;">🎓 Medication Counseling</h4>
+                        <ul style="margin: 10px 0; padding-left: 20px; font-size: 0.9em;">
+                            <li>Virtual counseling sessions</li>
+                            <li>Drug information provision</li>
+                            <li>Side effect education</li>
+                            <li>Adherence counseling</li>
+                            <li>Follow-up scheduling</li>
+                        </ul>
+                    </div>
+                    <div style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                        <h4 style="color: #667eea; margin-bottom: 10px;">📊 Adherence Monitoring</h4>
+                        <ul style="margin: 10px 0; padding-left: 20px; font-size: 0.9em;">
+                            <li>Refill reminder automation</li>
+                            <li>Medication synchronization</li>
+                            <li>Gap in therapy identification</li>
+                            <li>Physician communication</li>
+                            <li>Outcome tracking</li>
+                        </ul>
+                    </div>
+                    <div style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                        <h4 style="color: #667eea; margin-bottom: 10px;">🚚 Delivery Services</h4>
+                        <ul style="margin: 10px 0; padding-left: 20px; font-size: 0.9em;">
+                            <li>Same-day delivery options</li>
+                            <li>Contactless delivery protocols</li>
+                            <li>GPS tracking integration</li>
+                            <li>Signature confirmation</li>
+                            <li>Delivery time preferences</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quality Metrics & Performance -->
+            <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; border-radius: 15px;">
+                <h3 style="text-align: center; margin-bottom: 25px;">📈 Quality Metrics & Performance Monitoring</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+                    <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px;">
+                        <h4>⏱️ Speed Metrics</h4>
+                        <ul style="margin: 10px 0; padding-left: 20px; font-size: 0.9em;">
+                            <li>Prescription-to-ready time</li>
+                            <li>Average wait times</li>
+                            <li>Processing time tracking</li>
+                            <li>Delivery time monitoring</li>
+                            <li>Queue management efficiency</li>
+                        </ul>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px;">
+                        <h4>✅ Accuracy Metrics</h4>
+                        <ul style="margin: 10px 0; padding-left: 20px; font-size: 0.9em;">
+                            <li>Dispensing error rates</li>
+                            <li>Clinical intervention tracking</li>
+                            <li>Drug interaction catches</li>
+                            <li>Dosage error prevention</li>
+                            <li>Patient safety incidents</li>
+                        </ul>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px;">
+                        <h4>😊 Patient Satisfaction</h4>
+                        <ul style="margin: 10px 0; padding-left: 20px; font-size: 0.9em;">
+                            <li>Customer service ratings</li>
+                            <li>Pickup experience scores</li>
+                            <li>Delivery satisfaction metrics</li>
+                            <li>Communication effectiveness</li>
+                            <li>Overall pharmacy rating</li>
+                        </ul>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px;">
+                        <h4>💰 Financial Performance</h4>
+                        <ul style="margin: 10px 0; padding-left: 20px; font-size: 0.9em;">
+                            <li>Prescription volume growth</li>
+                            <li>Revenue per prescription</li>
+                            <li>Insurance reimbursement rates</li>
+                            <li>Cost management efficiency</li>
+                            <li>Profit margin analysis</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="architecture" class="content-section">
+            <h2 style="text-align: center; margin-bottom: 30px; color: #667eea;">System Architecture</h2>
+            
+            <div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; padding: 30px; border-radius: 15px; margin: 20px 0;">
+                <h3 style="text-align: center; margin-bottom: 20px;">Microservices Architecture</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+                    <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 10px; text-align: center;">
+                        <h4>API Gateway</h4>
+                        <p>Kong / AWS API Gateway</p>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 10px; text-align: center;">
+                        <h4>Load Balancer</h4>
+                        <p>NGINX / AWS ALB</p>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 10px; text-align: center;">
+                        <h4>Microservices</h4>
+                        <p>Node.js / Python / Java</p>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 10px; text-align: center;">
+                        <h4>Container Platform</h4>
+                        <p>Kubernetes / Docker</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid">
+                <div class="card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                    <h3>🎯 Frontend Layer</h3>
+                    <p>React Native, React.js, Electron</p>
+                </div>
+                <div class="card" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
+                    <h3>🔗 API Gateway</h3>
+                    <p>Rate limiting, Authentication</p>
+                </div>
+                <div class="card" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
+                    <h3>⚡ Microservices</h3>
+                    <p>Patient, Consultation, Prescription</p>
+                </div>
+                <div class="card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                    <h3>🗄️ Database Layer</h3>
+                    <p>PostgreSQL, MongoDB, Redis</p>
+                </div>
+                <div class="card" style="background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%); color: #333;">
+                    <h3>🌐 IoT Platform</h3>
+                    <p>AWS IoT Core, MQTT Protocol</p>
+                </div>
+                <div class="card" style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); color: #333;">
+                    <h3>☁️ Cloud Infrastructure</h3>
+                    <p>AWS, Auto-scaling, Load Balancing</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="workflow" class="content-section">
+            <h2 style="text-align: center; margin-bottom: 30px; color: #667eea;">Patient Workflow</h2>
+            
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h4>Registration</h4>
+                    <p>App signup, insurance verification</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h4>Booking</h4>
+                    <p>Doctor selection, scheduling</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h4>Check-in</h4>
+                    <p>Authentication, preparation</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <h4>Data Collection</h4>
+                    <p>Vital signs, medical readings</p>
+                </div>
+            </div>
+            
+            <div class="steps">
+                <div class="step" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
+                    <div class="step-number">5</div>
+                    <h4>Consultation</h4>
+                    <p>Video call, diagnosis</p>
+                </div>
+                <div class="step" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
+                    <div class="step-number">6</div>
+                    <h4>Prescription</h4>
+                    <p>E-prescription generation</p>
+                </div>
+                <div class="step" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                    <div class="step-number">7</div>
+                    <h4>Processing</h4>
+                    <p>Pharmacy routing</p>
+                </div>
+                <div class="step" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                    <div class="step-number">8</div>
+                    <h4>Pickup</h4>
+                    <p>Medication counseling</p>
+                </div>
+            </div>
+
+            <div style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); padding: 30px; border-radius: 15px;">
+                <h3 style="text-align: center; color: #333; margin-bottom: 20px;">IoT Medical Devices Integration</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                    <div style="background: rgba(102, 126, 234, 0.1); padding: 15px; border-radius: 10px; text-align: center;">🩺 Digital Stethoscope</div>
+                    <div style="background: rgba(102, 126, 234, 0.1); padding: 15px; border-radius: 10px; text-align: center;">🩸 Blood Glucose Meter</div>
+                    <div style="background: rgba(102, 126, 234, 0.1); padding: 15px; border-radius: 10px; text-align: center;">💓 ECG Machine</div>
+                    <div style="background: rgba(102, 126, 234, 0.1); padding: 15px; border-radius: 10px; text-align: center;">🌡️ Digital Thermometer</div>
+                    <div style="background: rgba(102, 126, 234, 0.1); padding: 15px; border-radius: 10px; text-align: center;">⚖️ Digital Scale</div>
+                    <div style="background: rgba(102, 126, 234, 0.1); padding: 15px; border-radius: 10px; text-align: center;">🫁 Pulse Oximeter</div>
+                    <div style="background: rgba(102, 126, 234, 0.1); padding: 15px; border-radius: 10px; text-align: center;">🧪 Biochemistry Analyzer</div>
+                    <div style="background: rgba(102, 126, 234, 0.1); padding: 15px; border-radius: 10px; text-align: center;">🔬 Urine Analyzer</div>
+                    <div style="background: rgba(102, 126, 234, 0.1); padding: 15px; border-radius: 10px; text-align: center;">📊 Vital Signs Monitor</div>
+                </div>
+                <div style="margin-top: 25px; background: rgba(102, 126, 234, 0.05); padding: 20px; border-radius: 10px;">
+                    <h4 style="color: #667eea; margin-bottom: 15px; text-align: center;">Advanced Diagnostic Capabilities</h4>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; font-size: 0.9em;">
+                        <div>
+                            <strong>🧪 Biochemistry Analysis:</strong> Comprehensive metabolic panels, liver function, kidney function, lipid profiles, cardiac markers
+                        </div>
+                        <div>
+                            <strong>🔬 Urinalysis:</strong> Protein, glucose, ketones, blood cells, bacteria, specific gravity, pH levels
+                        </div>
+                        <div>
+                            <strong>📊 Vital Monitoring:</strong> Blood pressure, heart rate, respiratory rate, temperature, SpO2, BMI calculations
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Doctor Workflow Section -->
+        <section id="doctor-workflow" class="content-section">
+            <h2 style="text-align: center; margin-bottom: 30px; color: #667eea;">Doctor Workflow & Specialties</h2>
+            
+            <!-- Doctor Registration Process -->
+            <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; border-radius: 15px; margin-bottom: 30px;">
+                <h3 style="text-align: center; margin-bottom: 25px;">👨‍⚕️ Doctor Registration & Onboarding</h3>
+                <div class="steps" style="margin-bottom: 0;">
+                    <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px; flex: 1; margin: 5px; min-width: 200px;">
+                        <div style="background: rgba(255,255,255,0.3); width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; font-weight: bold;">1</div>
+                        <h4>Professional Verification</h4>
+                        <p>Medical license validation, board certification, malpractice insurance verification</p>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px; flex: 1; margin: 5px; min-width: 200px;">
+                        <div style="background: rgba(255,255,255,0.3); width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; font-weight: bold;">2</div>
+                        <h4>Specialty Registration</h4>
+                        <p>Select medical specialties, define consultation types, set availability schedules</p>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px; flex: 1; margin: 5px; min-width: 200px;">
+                        <div style="background: rgba(255,255,255,0.3); width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; font-weight: bold;">3</div>
+                        <h4>Platform Training</h4>
+                        <p>Telemedicine platform training, kiosk device familiarization, compliance protocols</p>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px; flex: 1; margin: 5px; min-width: 200px;">
+                        <div style="background: rgba(255,255,255,0.3); width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; font-weight: bold;">4</div>
+                        <h4>Go Live</h4>
+                        <p>Profile activation, patient booking enabled, continuous quality monitoring</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Medical Specialties Grid -->
+            <div style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; padding: 30px; border-radius: 15px; margin-bottom: 30px;">
+                <h3 style="text-align: center; margin-bottom: 25px;">🏥 Supported Medical Specialties</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+                    <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px;">
+                        <h4>👂 ENT (Otolaryngology)</h4>
+                        <ul style="margin: 10px 0; padding-left: 20px; font-size: 0.9em;">
+                            <li>Ear, nose, throat examinations</li>
+                            <li>Hearing assessments</li>
+                            <li>Sinus and allergy consultations</li>
+                            <li>Voice and swallowing disorders</li>
+                        </ul>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px;">
+                        <h4>👁️ Ophthalmology</h4>
+                        <ul style="margin: 10px 0; padding-left: 20px; font-size: 0.9em;">
+                            <li>Eye examinations</li>
+                            <li>Vision screening</li>
+                            <li>Diabetic retinopathy screening</li>
+                            <li>Glaucoma assessments</li>
+                        </ul>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px;">
+                        <h4>🩺 Internal Medicine</h4>
+                        <ul style="margin: 10px 0; padding-left: 20px; font-size: 0.9em;">
+                            <li>General health consultations</li>
+                            <li>Chronic disease management</li>
+                            <li>Preventive care</li>
+                            <li>Follow-up appointments</li>
+                        </ul>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px;">
+                        <h4>🫀 Cardiology</h4>
+                        <ul style="margin: 10px 0; padding-left: 20px; font-size: 0.9em;">
+                            <li>ECG interpretation</li>
+                            <li>Heart rhythm monitoring</li>
+                            <li>Hypertension management</li>
+                            <li>Cardiac risk assessment</li>
+                        </ul>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px;">
+                        <h4>🧠 Neurology</h4>
+                        <ul style="margin: 10px 0; padding-left: 20px; font-size: 0.9em;">
+                            <li>Neurological assessments</li>
+                            <li>Headache evaluations</li>
+                            <li>Movement disorder consultations</li>
+                            <li>Cognitive assessments</li>
+                        </ul>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px;">
+                        <h4>🦴 Orthopedics</h4>
+                        <ul style="margin: 10px 0; padding-left: 20px; font-size: 0.9em;">
+                            <li>Musculoskeletal evaluations</li>
+                            <li>Joint pain assessments</li>
+                            <li>Sports injury consultations</li>
+                            <li>Post-surgical follow-ups</li>
+                        </ul>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px;">
+                        <h4>🧬 Endocrinology</h4>
+                        <ul style="margin: 10px 0; padding-left: 20px; font-size: 0.9em;">
+                            <li>Diabetes management</li>
+                            <li>Thyroid disorders</li>
+                            <li>Hormone therapy monitoring</li>
+                            <li>Metabolic consultations</li>
+                        </ul>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px;">
+                        <h4>🧴 Dermatology</h4>
+                        <ul style="margin: 10px 0; padding-left: 20px; font-size: 0.9em;">
+                            <li>Skin condition evaluations</li>
+                            <li>Rash consultations</li>
+                            <li>Mole assessments</li>
+                            <li>Acne treatment plans</li>
+                        </ul>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px;">
+                        <h4>👩‍⚕️ OB/GYN</h4>
+                        <ul style="margin: 10px 0; padding-left: 20px; font-size: 0.9em;">
+                            <li>Women's health consultations</li>
+                            <li>Prenatal care</li>
+                            <li>Contraception counseling</li>
+                            <li>Menopause management</li>
+                        </ul>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px;">
+                        <h4>🧒 Pediatrics</h4>
+                        <ul style="margin: 10px 0; padding-left: 20px; font-size: 0.9em;">
+                            <li>Child health consultations</li>
+                            <li>Growth monitoring</li>
+                            <li>Vaccination schedules</li>
+                            <li>Developmental assessments</li>
+                        </ul>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px;">
+                        <h4>🧠 Psychiatry</h4>
+                        <ul style="margin: 10px 0; padding-left: 20px; font-size: 0.9em;">
+                            <li>Mental health evaluations</li>
+                            <li>Medication management</li>
+                            <li>Therapy sessions</li>
+                            <li>Crisis interventions</li>
+                        </ul>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px;">
+                        <h4>🫁 Pulmonology</h4>
+                        <ul style="margin: 10px 0; padding-left: 20px; font-size: 0.9em;">
+                            <li>Respiratory assessments</li>
+                            <li>Asthma management</li>
+                            <li>COPD monitoring</li>
+                            <li>Sleep disorder evaluations</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Doctor Daily Workflow -->
+            <div style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); color: white; padding: 30px; border-radius: 15px; margin-bottom: 30px;">
+                <h3 style="text-align: center; margin-bottom: 25px;">📅 Doctor Daily Workflow</h3>
+                <div class="steps">
+                    <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px; flex: 1; margin: 5px; min-width: 200px;">
+                        <div style="background: rgba(255,255,255,0.3); width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; font-weight: bold;">1</div>
+                        <h4>Schedule Review</h4>
+                        <p>Review daily appointments, patient summaries, pre-consultation preparations</p>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px; flex: 1; margin: 5px; min-width: 200px;">
+                        <div style="background: rgba(255,255,255,0.3); width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; font-weight: bold;">2</div>
+                        <h4>Patient Queue</h4>
+                        <p>Access waiting patients, review kiosk data, prioritize based on urgency</p>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px; flex: 1; margin: 5px; min-width: 200px;">
+                        <div style="background: rgba(255,255,255,0.3); width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; font-weight: bold;">3</div>
+                        <h4>Remote Consultation</h4>
+                        <p>Conduct video consultations, review diagnostic data, interact with kiosk devices</p>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px; flex: 1; margin: 5px; min-width: 200px;">
+                        <div style="background: rgba(255,255,255,0.3); width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; font-weight: bold;">4</div>
+                        <h4>Documentation</h4>
+                        <p>Update medical records, issue prescriptions, schedule follow-ups, specialist referrals</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quality Assurance -->
+            <div style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); color: white; padding: 30px; border-radius: 15px;">
+                <h3 style="text-align: center; margin-bottom: 25px;">⭐ Quality Assurance & Monitoring</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+                    <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px;">
+                        <h4>📊 Performance Metrics</h4>
+                        <ul style="margin: 10px 0; padding-left: 20px; font-size: 0.9em;">
+                            <li>Patient satisfaction scores</li>
+                            <li>Consultation completion rates</li>
+                            <li>Response time monitoring</li>
+                            <li>Diagnostic accuracy tracking</li>
+                        </ul>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px;">
+                        <h4>🎓 Continuous Education</h4>
+                        <ul style="margin: 10px 0; padding-left: 20px; font-size: 0.9em;">
+                            <li>Telemedicine best practices</li>
+                            <li>Technology updates training</li>
+                            <li>Specialty-specific modules</li>
+                            <li>Compliance certifications</li>
+                        </ul>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px;">
+                        <h4>🔍 Peer Review</h4>
+                        <ul style="margin: 10px 0; padding-left: 20px; font-size: 0.9em;">
+                            <li>Case consultations</li>
+                            <li>Treatment plan reviews</li>
+                            <li>Quality improvement initiatives</li>
+                            <li>Clinical guidelines adherence</li>
+                        </ul>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px;">
+                        <h4>💰 Compensation Model</h4>
+                        <ul style="margin: 10px 0; padding-left: 20px; font-size: 0.9em;">
+                            <li>Per-consultation fees</li>
+                            <li>Hourly availability rates</li>
+                            <li>Performance bonuses</li>
+                            <li>Specialty premium rates</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="technology" class="content-section">
+            <h2 style="text-align: center; margin-bottom: 30px; color: #667eea;">Technology Stack</h2>
+            
+            <div class="tech-grid">
+                <div class="tech-category">
+                    <h4>🎨 Frontend</h4>
+                    <ul class="tech-list">
+                        <li>React Native (Mobile)</li>
+                        <li>React.js (Web)</li>
+                        <li>Electron.js (Kiosk)</li>
+                        <li>Material-UI</li>
+                    </ul>
+                </div>
+                
+                <div class="tech-category">
+                    <h4>⚙️ Backend</h4>
+                    <ul class="tech-list">
+                        <li>Node.js (Express)</li>
+                        <li>Python (FastAPI)</li>
+                        <li>Socket.io / WebRTC</li>
+                        <li>Redis / Kafka</li>
+                    </ul>
+                </div>
+                
+                <div class="tech-category">
+                    <h4>🗄️ Database</h4>
+                    <ul class="tech-list">
+                        <li>PostgreSQL (Primary)</li>
+                        <li>MongoDB (IoT)</li>
+                        <li>Redis (Cache)</li>
+                        <li>InfluxDB (Metrics)</li>
+                    </ul>
+                </div>
+                
+                <div class="tech-category">
+                    <h4>☁️ Cloud</h4>
+                    <ul class="tech-list">
+                        <li>AWS / Google Cloud</li>
+                        <li>Kubernetes</li>
+                        <li>Lambda Functions</li>
+                        <li>CloudFlare CDN</li>
+                    </ul>
+                </div>
+                
+                <div class="tech-category">
+                    <h4>🔧 DevOps</h4>
+                    <ul class="tech-list">
+                        <li>GitHub Actions</li>
+                        <li>Terraform</li>
+                        <li>Grafana</li>
+                        <li>ELK Stack</li>
+                    </ul>
+                </div>
+                
+                <div class="tech-category">
+                    <h4>🌐 IoT</h4>
+                    <ul class="tech-list">
+                        <li>AWS IoT Core</li>
+                        <li>MQTT Protocol</li>
+                        <li>HL7 FHIR</li>
+                        <li>OAuth 2.0</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="applications" class="content-section">
+            <h2 style="text-align: center; margin-bottom: 30px; color: #667eea;">Applications</h2>
+            
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h4>📱 Patient Mobile App</h4>
+                    <ul class="feature-list">
+                        <li>Biometric authentication</li>
+                        <li>Medical history management</li>
+                        <li>Appointment booking</li>
+                        <li>Kiosk finder (GPS)</li>
+                        <li>Video consultations</li>
+                        <li>Prescription tracking</li>
+                        <li>Insurance integration</li>
+                        <li>Health monitoring</li>
+                        <li>Push notifications</li>
+                        <li>Offline support</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-card">
+                    <h4>👨‍⚕️ Doctor Application</h4>
+                    <ul class="feature-list">
+                        <li>Professional dashboard</li>
+                        <li>Patient queue management</li>
+                        <li>Video consultation tools</li>
+                        <li>Medical records access</li>
+                        <li>E-prescribing system</li>
+                        <li>Drug interaction checker</li>
+                        <li>Clinical decision support</li>
+                        <li>Specialist referrals</li>
+                        <li>Schedule management</li>
+                        <li>Remote device control</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-card">
+                    <h4>💊 Pharmacy Application</h4>
+                    <ul class="feature-list">
+                        <li>Prescription notifications</li>
+                        <li>Inventory management</li>
+                        <li>Patient communication</li>
+                        <li>Insurance processing</li>
+                        <li>Delivery management</li>
+                        <li>Quality assurance</li>
+                        <li>Drug interaction alerts</li>
+                        <li>Analytics dashboard</li>
+                        <li>Supplier integration</li>
+                        <li>Compliance tracking</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-card">
+                    <h4>🏥 Smart Kiosk</h4>
+                    <ul class="feature-list">
+                        <li>Multi-modal authentication</li>
+                        <li>Medical device integration</li>
+                        <li>HD video consultation</li>
+                        <li>Vital signs display</li>
+                        <li>Prescription printing</li>
+                        <li>Emergency features</li>
+                        <li>Multi-language support</li>
+                        <li>Accessibility compliance</li>
+                        <li>Self-diagnostics</li>
+                        <li>Remote troubleshooting</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="integration" class="content-section">
+            <h2 style="text-align: center; margin-bottom: 30px; color: #667eea;">System Integration</h2>
+            
+            <div class="integration-layout">
+                <div class="integration-side">
+                    <div class="integration-item" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                        <h4>🏥 Healthcare</h4>
+                        <p>Epic, Cerner, Allscripts</p>
+                    </div>
+                    <div class="integration-item" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
+                        <h4>🔬 Laboratories</h4>
+                        <p>Quest, LabCorp</p>
+                    </div>
+                    <div class="integration-item" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
+                        <h4>🛡️ Insurance</h4>
+                        <p>Blue Cross, UnitedHealth</p>
+                    </div>
+                </div>
+                
+                <div class="integration-center">
+                    <h3>🌐 Central Platform</h3>
+                    <p>Core telemedicine system with API gateway and microservices</p>
+                    <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 10px; margin: 15px 0;">
+                        <strong>HL7 FHIR</strong><br>Healthcare data exchange
+                    </div>
+                    <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 10px;">
+                        <strong>REST APIs</strong><br>Communication protocols
+                    </div>
+                </div>
+                
+                <div class="integration-side">
+                    <div class="integration-item" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                        <h4>💊 Pharmacies</h4>
+                        <p>CVS, Walgreens</p>
+                    </div>
+                    <div class="integration-item" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                        <h4>💳 Payments</h4>
+                        <p>Stripe, Square</p>
+                    </div>
+                    <div class="integration-item" style="background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%); color: #333;">
+                        <h4>📹 Video APIs</h4>
+                        <p>Twilio, WebRTC</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="timeline" class="content-section">
+            <h2 style="text-align: center; margin-bottom: 30px; color: #667eea;">Implementation Timeline</h2>
+            
+            <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; border-radius: 15px; margin-bottom: 30px;">
+                <h3 style="text-align: center; margin-bottom: 25px;">📅 15-Month Development Plan</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+                    <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px;">
+                        <h4>Phase 1: Foundation (6m)</h4>
+                        <ul style="margin: 10px 0; padding-left: 20px; font-size: 0.9em;">
+                            <li>Cloud infrastructure</li>
+                            <li>Patient mobile app</li>
+                            <li>Kiosk integration</li>
+                            <li>IoT connectivity</li>
+                        </ul>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px;">
+                        <h4>Phase 2: Core (4m)</h4>
+                        <ul style="margin: 10px 0; padding-left: 20px; font-size: 0.9em;">
+                            <li>Doctor portal</li>
+                            <li>E-prescribing</li>
+                            <li>Pharmacy APIs</li>
+                            <li>Video platform</li>
+                        </ul>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px;">
+                        <h4>Phase 3: Integration (3m)</h4>
+                        <ul style="margin: 10px 0; padding-left: 20px; font-size: 0.9em;">
+                            <li>Insurance APIs</li>
+                            <li>LIS system</li>
+                            <li>Analytics</li>
+                            <li>AI support</li>
+                        </ul>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px;">
+                        <h4>Phase 4: Launch (2m)</h4>
+                        <ul style="margin: 10px 0; padding-left: 20px; font-size: 0.9em;">
+                            <li>Testing</li>
+                            <li>Compliance</li>
+                            <li>Pilot deployment</li>
+                            <li>Go-live</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="metrics">
+                <div class="metric" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                    <div class="metric-value">Month 3</div>
+                    <div class="metric-label">First Kiosk</div>
+                </div>
+                <div class="metric" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
+                    <div class="metric-value">Month 6</div>
+                    <div class="metric-label">App Beta</div>
+                </div>
+                <div class="metric" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
+                    <div class="metric-value">Month 10</div>
+                    <div class="metric-label">Doctor Portal</div>
+                </div>
+                <div class="metric" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                    <div class="metric-value">Month 15</div>
+                    <div class="metric-label">Full Launch</div>
+                </div>
+            </div>
+        </section>
+
+        <section id="metrics" class="content-section">
+            <h2 style="text-align: center; margin-bottom: 30px; color: #667eea;">Success Metrics</h2>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-bottom: 30px;">
+                <div style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; padding: 30px; border-radius: 15px;">
+                    <h3 style="text-align: center; margin-bottom: 20px;">📊 Performance</h3>
+                    <div style="display: grid; gap: 15px;">
+                        <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 8px;">
+                            <div style="font-size: 1.5em; font-weight: bold;">99.9%</div>
+                            <div style="font-size: 0.9em;">System Uptime</div>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 8px;">
+                            <div style="font-size: 1.5em; font-weight: bold;">&lt; 2s</div>
+                            <div style="font-size: 0.9em;">Response Time</div>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 8px;">
+                            <div style="font-size: 1.5em; font-weight: bold;">4.8/5</div>
+                            <div style="font-size: 0.9em;">User Satisfaction</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); color: white; padding: 30px; border-radius: 15px;">
+                    <h3 style="text-align: center; margin-bottom: 20px;">💼 Business</h3>
+                    <div style="display: grid; gap: 15px;">
+                        <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 8px;">
+                            <div style="font-size: 1.5em; font-weight: bold;">50K+</div>
+                            <div style="font-size: 0.9em;">Monthly Users</div>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 8px;">
+                            <div style="font-size: 1.5em; font-weight: bold;">10K+</div>
+                            <div style="font-size: 0.9em;">Consultations</div>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 8px;">
+                            <div style="font-size: 1.5em; font-weight: bold;">$2M+</div>
+                            <div style="font-size: 0.9em;">Monthly Revenue</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; border-radius: 15px; margin-bottom: 30px;">
+                <h3 style="text-align: center; margin-bottom: 25px;">💰 Revenue Streams</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+                    <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px; text-align: center;">
+                        <h4>💳 Consultation Fees</h4>
+                        <p>$50-150 per session</p>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px; text-align: center;">
+                        <h4>📱 Subscriptions</h4>
+                        <p>$29-99/month</p>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px; text-align: center;">
+                        <h4>💊 Pharmacy Share</h4>
+                        <p>5-10% commission</p>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px; text-align: center;">
+                        <h4>🏥 Kiosk Licensing</h4>
+                        <p>$500-2000/month</p>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px; text-align: center;">
+                        <h4>🛡️ Insurance</h4>
+                        <p>Direct billing</p>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px; text-align: center;">
+                        <h4>📊 Analytics</h4>
+                        <p>Health insights</p>
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; padding: 30px; border-radius: 15px;">
+                <h3 style="text-align: center; margin-bottom: 25px;">🎯 Growth Projections</h3>
+                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; text-align: center;">
+                    <div>
+                        <h4>Year 1</h4>
+                        <div style="font-size: 1.8em; font-weight: bold; margin: 10px 0;">100</div>
+                        <p>Kiosks</p>
+                    </div>
+                    <div>
+                        <h4>Year 2</h4>
+                        <div style="font-size: 1.8em; font-weight: bold; margin: 10px 0;">500</div>
+                        <p>Kiosks</p>
+                    </div>
+                    <div>
+                        <h4>Year 3</h4>
+                        <div style="font-size: 1.8em; font-weight: bold; margin: 10px 0;">1,500</div>
+                        <p>Kiosks</p>
+                    </div>
+                    <div>
+                        <h4>Year 5</h4>
+                        <div style="font-size: 1.8em; font-weight: bold; margin: 10px 0;">5,000</div>
+                        <p>Kiosks</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        function showSection(sectionId) {
+            const sections = document.querySelectorAll('.content-section');
+            const tabs = document.querySelectorAll('.tab');
+            
+            sections.forEach(section => section.classList.remove('active'));
+            tabs.forEach(tab => tab.classList.remove('active'));
+            
+            document.getElementById(sectionId).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.card, .step, .tech-category, .feature-card');
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'scale(1.05) translateY(-5px)';
+                    this.style.transition = 'all 0.3s ease';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'scale(1) translateY(0)';
+                });
+            });
+
+            const metrics = document.querySelectorAll('.metric');
+            metrics.forEach(metric => {
+                metric.addEventListener('click', function() {
+                    this.style.animation = 'pulse 0.6s ease-in-out';
+                    setTimeout(() => {
+                        this.style.animation = '';
+                    }, 600);
+                });
+            });
+        });
+
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes pulse {
+                0% { transform: scale(1); }
+                50% { transform: scale(1.1); }
+                100% { transform: scale(1); }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
