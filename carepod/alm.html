@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="googlebot" content="noindex, nofollow">
+    <title>CarePod: Agile Application Lifecycle Management</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        
+        .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
+        
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.8;
+        }
+        
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .back-link:hover {
+            transform: translateX(-5px);
+        }
+        
+        .back-link svg {
+            vertical-align: middle;
+            margin-right: 5px;
+        }
+        
+        .content-section {
+            background: rgba(255,255,255,0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+        }
+        
+        .section-title {
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            color: #4361ee;
+            border-bottom: 2px solid #4361ee;
+            padding-bottom: 10px;
+        }
+        
+        .description {
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        
+        /* Diagram specific styles */
+        .diagram-container {
+            margin: 30px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .alm-diagram {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .cycle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        
+        .phase {
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 0 -15px;
+            position: relative;
+            padding: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 2;
+        }
+        
+        .phase:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+        }
+        
+        .phase.plan { background: linear-gradient(135deg, #a5fecb 0%, #20bdff 100%); }
+        .phase.design { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+        .phase.develop { background: linear-gradient(135deg, #fad961 0%, #f76b1c 100%); }
+        .phase.test { background: linear-gradient(135deg, #6edcc4 0%, #1fa2ff 100%); }
+        .phase.deploy { background: linear-gradient(135deg, #f9d423 0%, #e14fad 100%); }
+        .phase.review { background: linear-gradient(135deg, #30cfd0 0%, #5b397d 100%); }
+        .phase.operate { background: linear-gradient(135deg, #88d3ce 0%, #6e45e2 100%); }
+        
+        .phase-title {
+            font-weight: 600;
+            font-size: 1.1em;
+            margin-bottom: 5px;
+            color: white;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+        }
+        
+        .phase-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+            color: white;
+        }
+        
+        .cycle-connector {
+            position: absolute;
+            width: calc(100% - 100px);
+            height: calc(100% - 100px);
+            border: 3px dashed rgba(255,255,255,0.7);
+            border-radius: 50%;
+            z-index: 1;
+        }
+        
+        .cycle-arrow {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            font-weight: bold;
+            color: #4361ee;
+            z-index: 3;
+        }
+        
+        .phase-details {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            display: none;
+        }
+        
+        .phase-details.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .phase-details h3 {
+            font-size: 1.5em;
+            margin-bottom: 15px;
+            color: #4361ee;
+        }
+        
+        .practices {
+            margin-top: 20px;
+        }
+        
+        .practice-item {
+            background: #f5f7fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .practice-icon {
+            margin-right: 15px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #4361ee;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2em;
+        }
+        
+        .practice-content h4 {
+            margin-bottom: 5px;
+            color: #333;
+        }
+        
+        .practice-content p {
+            color: #666;
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+        
+        @media (max-width: 768px) {
+            .cycle {
+                flex-direction: column;
+            }
+            
+            .phase {
+                margin: -15px 0;
+            }
+            
+            .cycle-connector {
+                width: calc(100% - 100px);
+                height: calc(100% - 50px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="telemedicine_presentation.html" class="back-link">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
+            </svg>
+            Back to Telemedicine Presentation
+        </a>
+        
+        <header class="header">
+            <h1>Agile Application Lifecycle Management</h1>
+            <p>For CarePod Telemedicine System</p>
+        </header>
+        
+        <div class="content-section">
+            <h2 class="section-title">What is Agile ALM?</h2>
+            <div class="description">
+                <p>Agile Application Lifecycle Management (ALM) is a continuous process that integrates planning, development, and delivery in iterative cycles. Unlike traditional waterfall models, Agile ALM enables teams to respond to changing requirements, deliver value incrementally, and maintain a high level of quality throughout the development process.</p>
+                <p>For the CarePod Telemedicine System, implementing Agile ALM allows us to quickly adapt to evolving healthcare needs, regulatory requirements, and technological advancements.</p>
+            </div>
+            
+            <div class="diagram-container">
+                <div class="alm-diagram">
+                    <div class="cycle">
+                        <div class="phase plan" data-phase="plan">
+                            <div class="phase-icon">📋</div>
+                            <div class="phase-title">Plan</div>
+                        </div>
+                        <div class="phase design" data-phase="design">
+                            <div class="phase-icon">🎨</div>
+                            <div class="phase-title">Design</div>
+                        </div>
+                        <div class="phase develop" data-phase="develop">
+                            <div class="phase-icon">💻</div>
+                            <div class="phase-title">Develop</div>
+                        </div>
+                        <div class="phase test" data-phase="test">
+                            <div class="phase-icon">🧪</div>
+                            <div class="phase-title">Test</div>
+                        </div>
+                        <div class="phase deploy" data-phase="deploy">
+                            <div class="phase-icon">🚀</div>
+                            <div class="phase-title">Deploy</div>
+                        </div>
+                        <div class="phase review" data-phase="review">
+                            <div class="phase-icon">📊</div>
+                            <div class="phase-title">Review</div>
+                        </div>
+                        <div class="phase operate" data-phase="operate">
+                            <div class="phase-icon">⚙️</div>
+                            <div class="phase-title">Operate</div>
+                        </div>
+                        <div class="cycle-connector"></div>
+                        <div class="cycle-arrow" style="top: 50%; right: 15px; transform: translateY(-50%);">→</div>
+                    </div>
+                    
+                    <div class="phase-details" id="plan-details">
+                        <h3>Plan Phase</h3>
+                        <p>In the Plan phase, stakeholders define requirements, prioritize features, and create user stories for the CarePod system. This phase involves understanding healthcare provider needs, patient expectations, and regulatory compliance requirements.</p>
+                        <div class="practices">
+                            <div class="practice-item">
+                                <div class="practice-icon">📝</div>
+                                <div class="practice-content">
+                                    <h4>User Story Creation</h4>
+                                    <p>Developing detailed user stories that capture functionality from the perspective of patients, healthcare providers, and administrators.</p>
+                                </div>
+                            </div>
+                            <div class="practice-item">
+                                <div class="practice-icon">📊</div>
+                                <div class="practice-content">
+                                    <h4>Backlog Prioritization</h4>
+                                    <p>Using MoSCoW method (Must have, Should have, Could have, Won't have) to prioritize features based on clinical value and technical feasibility.</p>
+                                </div>
+                            </div>
+                            <div class="practice-item">
+                                <div class="practice-icon">🗓️</div>
+                                <div class="practice-content">
+                                    <h4>Sprint Planning</h4>
+                                    <p>Organizing two-week sprints with clear goals and deliverables for the cross-functional team.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="phase-details" id="design-details">
+                        <h3>Design Phase</h3>
+                        <p>The Design phase focuses on creating user interfaces, system architecture, and data models that support the telemedicine workflow. Healthcare UX expertise is critical in this phase to ensure usability for both patients and clinicians.</p>
+                        <div class="practices">
+                            <div class="practice-item">
+                                <div class="practice-icon">🖌️</div>
+                                <div class="practice-content">
+                                    <h4>User Experience Design</h4>
+                                    <p>Creating intuitive interfaces that accommodate users with varying levels of technical proficiency and potential physical limitations.</p>
+                                </div>
+                            </div>
+                            <div class="practice-item">
+                                <div class="practice-icon">📐</div>
+                                <div class="practice-content">
+                                    <h4>System Architecture</h4>
+                                    <p>Designing scalable, secure architecture that supports real-time video consultations, medical device integration, and electronic health record interoperability.</p>
+                                </div>
+                            </div>
+                            <div class="practice-item">
+                                <div class="practice-icon">🔄</div>
+                                <div class="practice-content">
+                                    <h4>Iterative Prototyping</h4>
+                                    <p>Developing and testing prototypes with actual healthcare providers to validate design decisions before full implementation.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="phase-details" id="develop-details">
+                        <h3>Develop Phase</h3>
+                        <p>During the Development phase, engineers implement features according to the design specifications, following coding standards and best practices for healthcare applications.</p>
+                        <div class="practices">
+                            <div class="practice-item">
+                                <div class="practice-icon">👥</div>
+                                <div class="practice-content">
+                                    <h4>Pair Programming</h4>
+                                    <p>Using pair programming techniques to ensure code quality, knowledge sharing, and faster problem-solving for complex telemedicine features.</p>
+                                </div>
+                            </div>
+                            <div class="practice-item">
+                                <div class="practice-icon">🔒</div>
+                                <div class="practice-content">
+                                    <h4>Secure Coding Practices</h4>
+                                    <p>Implementing HIPAA-compliant code with data encryption, secure authentication, and audit trails for all patient data access.</p>
+                                </div>
+                            </div>
+                            <div class="practice-item">
+                                <div class="practice-icon">🔄</div>
+                                <div class="practice-content">
+                                    <h4>Continuous Integration</h4>
+                                    <p>Utilizing CI/CD pipelines to automate builds, testing, and deployment processes for faster feedback loops.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="phase-details" id="test-details">
+                        <h3>Test Phase</h3>
+                        <p>The Test phase involves comprehensive validation of functionality, security, and performance to ensure the CarePod system meets healthcare standards and user expectations.</p>
+                        <div class="practices">
+                            <div class="practice-item">
+                                <div class="practice-icon">🧪</div>
+                                <div class="practice-content">
+                                    <h4>Automated Testing</h4>
+                                    <p>Implementing comprehensive unit, integration, and end-to-end tests to verify system functionality and catch regressions early.</p>
+                                </div>
+                            </div>
+                            <div class="practice-item">
+                                <div class="practice-icon">🔍</div>
+                                <div class="practice-content">
+                                    <h4>Security Testing</h4>
+                                    <p>Conducting penetration testing, vulnerability scanning, and security code reviews to protect sensitive patient data.</p>
+                                </div>
+                            </div>
+                            <div class="practice-item">
+                                <div class="practice-icon">👤</div>
+                                <div class="practice-content">
+                                    <h4>Usability Testing</h4>
+                                    <p>Performing tests with healthcare professionals and patients to validate user experience and workflow efficiency.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="phase-details" id="deploy-details">
+                        <h3>Deploy Phase</h3>
+                        <p>The Deploy phase focuses on releasing new features and updates to production environments with minimal disruption to healthcare services.</p>
+                        <div class="practices">
+                            <div class="practice-item">
+                                <div class="practice-icon">🚀</div>
+                                <div class="practice-content">
+                                    <h4>Phased Rollouts</h4>
+                                    <p>Implementing features incrementally across facilities to manage risk and gather feedback before full deployment.</p>
+                                </div>
+                            </div>
+                            <div class="practice-item">
+                                <div class="practice-icon">🔄</div>
+                                <div class="practice-content">
+                                    <h4>Zero-Downtime Deployment</h4>
+                                    <p>Utilizing blue-green deployment strategies to ensure continuous availability of telemedicine services during updates.</p>
+                                </div>
+                            </div>
+                            <div class="practice-item">
+                                <div class="practice-icon">📋</div>
+                                <div class="practice-content">
+                                    <h4>Deployment Verification</h4>
+                                    <p>Performing smoke tests and health checks to confirm system functionality post-deployment.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="phase-details" id="review-details">
+                        <h3>Review Phase</h3>
+                        <p>The Review phase involves gathering feedback, analyzing metrics, and evaluating the impact of new features on healthcare delivery and patient outcomes.</p>
+                        <div class="practices">
+                            <div class="practice-item">
+                                <div class="practice-icon">📊</div>
+                                <div class="practice-content">
+                                    <h4>Performance Metrics</h4>
+                                    <p>Analyzing system performance, user engagement, and clinical workflow efficiency to identify areas for improvement.</p>
+                                </div>
+                            </div>
+                            <div class="practice-item">
+                                <div class="practice-icon">🔄</div>
+                                <div class="practice-content">
+                                    <h4>Sprint Retrospectives</h4>
+                                    <p>Conducting regular team meetings to reflect on what went well, challenges faced, and lessons learned.</p>
+                                </div>
+                            </div>
+                            <div class="practice-item">
+                                <div class="practice-icon">👥</div>
+                                <div class="practice-content">
+                                    <h4>Stakeholder Feedback</h4>
+                                    <p>Collecting and prioritizing feedback from healthcare providers, patients, and administrators to guide future development.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="phase-details" id="operate-details">
+                        <h3>Operate Phase</h3>
+                        <p>The Operate phase ensures the CarePod system runs reliably, efficiently, and securely in production environments, with ongoing support and maintenance.</p>
+                        <div class="practices">
+                            <div class="practice-item">
+                                <div class="practice-icon">📈</div>
+                                <div class="practice-content">
+                                    <h4>Monitoring & Alerting</h4>
+                                    <p>Implementing comprehensive monitoring for system health, performance, and security incidents with automated alerts for critical issues.</p>
+                                </div>
+                            </div>
+                            <div class="practice-item">
+                                <div class="practice-icon">🛠️</div>
+                                <div class="practice-content">
+                                    <h4>Technical Support</h4>
+                                    <p>Providing tiered support for healthcare facilities, with escalation paths for clinical and technical issues.</p>
+                                </div>
+                            </div>
+                            <div class="practice-item">
+                                <div class="practice-icon">📊</div>
+                                <div class="practice-content">
+                                    <h4>Continuous Optimization</h4>
+                                    <p>Regularly analyzing performance data, implementing optimizations, and managing capacity to ensure system scalability.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="content-section">
+            <h2 class="section-title">Benefits for CarePod Telemedicine</h2>
+            <div class="description">
+                <p>Implementing Agile ALM for the CarePod Telemedicine System delivers several key benefits:</p>
+                <ul style="margin-left: 20px; line-height: 1.6;">
+                    <li><strong>Rapid Response to Healthcare Needs:</strong> Quick adaptation to evolving telehealth requirements and regulations</li>
+                    <li><strong>Incremental Value Delivery:</strong> Frequent releases that allow healthcare providers to start benefiting from new features sooner</li>
+                    <li><strong>Reduced Risk:</strong> Early detection of issues through continuous testing and stakeholder feedback</li>
+                    <li><strong>Enhanced Quality:</strong> Consistent focus on quality throughout the development process</li>
+                    <li><strong>Improved Collaboration:</strong> Better communication between clinical stakeholders and development teams</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Show phase details when clicking on a phase
+        document.querySelectorAll('.phase').forEach(phase => {
+            phase.addEventListener('click', function() {
+                const phaseType = this.getAttribute('data-phase');
+                
+                // Hide all phase details
+                document.querySelectorAll('.phase-details').forEach(detail => {
+                    detail.classList.remove('active');
+                });
+                
+                // Show selected phase details
+                document.getElementById(`${phaseType}-details`).classList.add('active');
+                
+                // Scroll to the details section
+                document.getElementById(`${phaseType}-details`).scrollIntoView({ behavior: 'smooth', block: 'center' });
+            });
+        });
+        
+        // Initially show the Plan phase details
+        document.getElementById('plan-details').classList.add('active');
+    </script>
+</body>
+</html>
