@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Insurance Affiliate Platform Architecture</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        
+        h2 {
+            color: #34495e;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+            margin-top: 40px;
+        }
+        
+        .flow-section {
+            margin-bottom: 40px;
+        }
+        
+        .flow-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        
+        .flow-step {
+            background: linear-gradient(135deg, #74b9ff, #0984e3);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 25px;
+            position: relative;
+            min-width: 150px;
+            text-align: center;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease;
+        }
+        
+        .flow-step:hover {
+            transform: translateY(-5px);
+        }
+        
+        .flow-step::after {
+            content: '→';
+            position: absolute;
+            right: -15px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 20px;
+            color: #2c3e50;
+        }
+        
+        .flow-step:last-child::after {
+            display: none;
+        }
+        
+        .architecture-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .layer {
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            padding: 20px;
+            background: #f8f9fa;
+            transition: all 0.3s ease;
+        }
+        
+        .layer:hover {
+            border-color: #3498db;
+            box-shadow: 0 5px 20px rgba(52, 152, 219, 0.2);
+        }
+        
+        .layer h3 {
+            color: #2c3e50;
+            margin-top: 0;
+            border-bottom: 2px solid #e74c3c;
+            padding-bottom: 10px;
+        }
+        
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 10px 0;
+        }
+        
+        .tech-item {
+            background: #e74c3c;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: bold;
+        }
+        
+        .frontend { background: #00b894; }
+        .backend { background: #fdcb6e; }
+        .database { background: #6c5ce7; }
+        .security { background: #fd79a8; }
+        .payment { background: #00cec9; }
+        
+        .user-types {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .user-type {
+            text-align: center;
+            padding: 20px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #a29bfe, #6c5ce7);
+            color: white;
+            min-width: 200px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        
+        .data-flow {
+            background: #f1f2f6;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .flow-arrow {
+            text-align: center;
+            font-size: 2em;
+            color: #3498db;
+            margin: 10px 0;
+        }
+        
+        @media (max-width: 768px) {
+            .flow-container {
+                flex-direction: column;
+            }
+            
+            .flow-step::after {
+                content: '↓';
+                right: 50%;
+                top: 100%;
+                transform: translateX(50%);
+            }
+            
+            .user-types {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏢 Insurance Affiliate Platform Architecture</h1>
+        
+        <!-- User Flow Section -->
+        <div class="flow-section">
+            <h2>A. User Journey Flow</h2>
+            <div class="flow-container">
+                <div class="flow-step">📝 Registration</div>
+                <div class="flow-step">✅ Admin Approval</div>
+                <div class="flow-step">🎯 Product Selection</div>
+                <div class="flow-step">🔗 Generate Links</div>
+                <div class="flow-step">📈 Marketing</div>
+                <div class="flow-step">👥 Lead Generation</div>
+                <div class="flow-step">💼 Policy Sales</div>
+                <div class="flow-step">💰 Commission</div>
+            </div>
+        </div>
+
+        <!-- User Types -->
+        <div class="user-types">
+            <div class="user-type">
+                <div class="icon">👥</div>
+                <h3>Public Users</h3>
+                <p>Affiliate Registration<br>Application Process</p>
+            </div>
+            <div class="user-type">
+                <div class="icon">🤝</div>
+                <h3>Affiliates</h3>
+                <p>Dashboard, Links<br>Commission Tracking</p>
+            </div>
+            <div class="user-type">
+                <div class="icon">👨‍💼</div>
+                <h3>Administrators</h3>
+                <p>Approval, Management<br>Analytics & Reports</p>
+            </div>
+            <div class="user-type">
+                <div class="icon">🛡️</div>
+                <h3>Insurance Carriers</h3>
+                <p>Product Integration<br>Policy Management</p>
+            </div>
+        </div>
+
+        <!-- System Architecture -->
+        <div class="flow-section">
+            <h2>B. Technology Stack & Architecture</h2>
+            <div class="architecture-grid">
+                <div class="layer">
+                    <h3>Frontend Layer</h3>
+                    <div class="tech-stack">
+                        <span class="tech-item frontend">React/Vue.js</span>
+                        <span class="tech-item frontend">TypeScript</span>
+                        <span class="tech-item frontend">Tailwind CSS</span>
+                        <span class="tech-item frontend">PWA</span>
+                    </div>
+                    <ul>
+                        <li>Affiliate Dashboard</li>
+                        <li>Admin Panel</li>
+                        <li>Public Landing Pages</li>
+                        <li>Mobile Responsive</li>
+                    </ul>
+                </div>
+
+                <div class="layer">
+                    <h3>Backend Services</h3>
+                    <div class="tech-stack">
+                        <span class="tech-item backend">Node.js/Python</span>
+                        <span class="tech-item backend">Express/FastAPI</span>
+                        <span class="tech-item backend">Microservices</span>
+                        <span class="tech-item backend">REST APIs</span>
+                    </div>
+                    <ul>
+                        <li>User Management</li>
+                        <li>Commission Engine</li>
+                        <li>Lead Tracking</li>
+                        <li>Reporting Services</li>
+                    </ul>
+                </div>
+
+                <div class="layer">
+                    <h3>Database Layer</h3>
+                    <div class="tech-stack">
+                        <span class="tech-item database">PostgreSQL</span>
+                        <span class="tech-item database">Redis Cache</span>
+                        <span class="tech-item database">MongoDB</span>
+                        <span class="tech-item database">ElasticSearch</span>
+                    </div>
+                    <ul>
+                        <li>User Data</li>
+                        <li>Commission Records</li>
+                        <li>Lead Analytics</li>
+                        <li>Audit Logs</li>
+                    </ul>
+                </div>
+
+                <div class="layer">
+                    <h3>Security & Compliance</h3>
+                    <div class="tech-stack">
+                        <span class="tech-item security">JWT/OAuth2</span>
+                        <span class="tech-item security">SSL/TLS</span>
+                        <span class="tech-item security">PCI DSS</span>
+                        <span class="tech-item security">GDPR</span>
+                    </div>
+                    <ul>
+                        <li>Authentication</li>
+                        <li>Data Encryption</li>
+                        <li>API Security</li>
+                        <li>Audit Trails</li>
+                    </ul>
+                </div>
+
+                <div class="layer">
+                    <h3>Payment & Integration</h3>
+                    <div class="tech-stack">
+                        <span class="tech-item payment">Stripe</span>
+                        <span class="tech-item payment">PayPal</span>
+                        <span class="tech-item payment">Bank APIs</span>
+                        <span class="tech-item payment">Insurance APIs</span>
+                    </div>
+                    <ul>
+                        <li>Commission Payouts</li>
+                        <li>Multi-currency</li>
+                        <li>Carrier Integration</li>
+                        <li>Real-time Tracking</li>
+                    </ul>
+                </div>
+
+                <div class="layer">
+                    <h3>Infrastructure</h3>
+                    <div class="tech-stack">
+                        <span class="tech-item">AWS/Azure</span>
+                        <span class="tech-item">Docker</span>
+                        <span class="tech-item">Kubernetes</span>
+                        <span class="tech-item">CI/CD</span>
+                    </div>
+                    <ul>
+                        <li>Cloud Hosting</li>
+                        <li>Auto Scaling</li>
+                        <li>Load Balancing</li>
+                        <li>Monitoring</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Data Flow -->
+        <div class="flow-section">
+            <h2>C. Data Flow Architecture</h2>
+            <div class="data-flow">
+                <div style="text-align: center;">
+                    <div style="background: #74b9ff; color: white; padding: 15px; border-radius: 10px; margin: 10px; display: inline-block;">
+                        🌐 Public Registration Portal
+                    </div>
+                    <div class="flow-arrow">↓</div>
+                    <div style="background: #00b894; color: white; padding: 15px; border-radius: 10px; margin: 10px; display: inline-block;">
+                        🔍 Admin Approval System
+                    </div>
+                    <div class="flow-arrow">↓</div>
+                    <div style="background: #fdcb6e; color: white; padding: 15px; border-radius: 10px; margin: 10px; display: inline-block;">
+                        📊 Affiliate Dashboard & Tools
+                    </div>
+                    <div class="flow-arrow">↓</div>
+                    <div style="background: #e84393; color: white; padding: 15px; border-radius: 10px; margin: 10px; display: inline-block;">
+                        🎯 Lead Tracking & Attribution
+                    </div>
+                    <div class="flow-arrow">↓</div>
+                    <div style="background: #a29bfe; color: white; padding: 15px; border-radius: 10px; margin: 10px; display: inline-block;">
+                        💰 Commission Calculation & Payout
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Key Features -->
+        <div class="flow-section">
+            <h2>Core Platform Features</h2>
+            <div class="architecture-grid">
+                <div class="layer">
+                    <h3>🚀 Member Features</h3>
+                    <ul>
+                        <li>Self-registration portal</li>
+                        <li>Profile management</li>
+                        <li>Marketing materials</li>
+                        <li>Real-time analytics</li>
+                        <li>Commission tracking</li>
+                        <li>Payment history</li>
+                    </ul>
+                </div>
+                <div class="layer">
+                    <h3>⚙️ Admin Features</h3>
+                    <ul>
+                        <li>Application approval workflow</li>
+                        <li>Commission structure management</li>
+                        <li>Payout processing</li>
+                        <li>Performance analytics</li>
+                        <li>Fraud detection</li>
+                        <li>Compliance monitoring</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
