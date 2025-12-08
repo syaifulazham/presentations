@@ -238,6 +238,30 @@
             max-width: 500px;
             margin: 0 auto;
         }
+        
+        .mockup-btn {
+            display: inline-block;
+            background: var(--success);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            margin-top: 1rem;
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            font-size: 0.9rem;
+        }
+        
+        .mockup-btn:hover {
+            background: #3d9140;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .mockup-btn i {
+            margin-left: 5px;
+            font-size: 0.8rem;
+        }
 
         footer {
             text-align: center;
@@ -324,6 +348,7 @@
                         <span><i class="far fa-calendar"></i> Oct 2025</span>
                         <span><i class="far fa-clock"></i> 10 min</span>
                     </div>
+                    <a href="affiliate/sample/index.html" class="mockup-btn" onclick="event.stopPropagation()">View Mockup <i class="fas fa-external-link-alt"></i></a>
                 </div>
             </div>
         </div>

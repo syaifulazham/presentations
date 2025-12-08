@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Next.js Architecture - D3.js</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            overflow: auto;
+            min-height: 100vh;
+        }
+        
+        #container {
+            width: 100%;
+            min-height: 100vh;
+            position: relative;
+            padding: 20px;
+        }
+        
+        svg {
+            width: 100%;
+            height: 1000px;
+        }
+        
+        .link {
+            fill: none;
+            stroke: #3498db;
+            stroke-width: 3;
+            opacity: 0.6;
+        }
+        
+        .link-animated {
+            stroke-dasharray: 10, 5;
+            animation: dash 1s linear infinite;
+        }
+        
+        @keyframes dash {
+            to {
+                stroke-dashoffset: -15;
+            }
+        }
+        
+        .node-group {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .node-circle {
+            stroke: #fff;
+            stroke-width: 3;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
+        }
+        
+        .node-group:hover .node-circle {
+            stroke-width: 5;
+            filter: drop-shadow(0 8px 16px rgba(0,0,0,0.4));
+        }
+        
+        .node-text {
+            font-size: 14px;
+            font-weight: bold;
+            fill: #2c3e50;
+            text-anchor: middle;
+            pointer-events: none;
+        }
+        
+        .node-icon {
+            font-size: 32px;
+            text-anchor: middle;
+            dominant-baseline: middle;
+            pointer-events: none;
+        }
+        
+        .node-subtitle {
+            font-size: 11px;
+            fill: #7f8c8d;
+            text-anchor: middle;
+            pointer-events: none;
+        }
+        
+        .notes-box {
+            fill: white;
+            stroke: #ddd;
+            stroke-width: 2;
+            rx: 8;
+            filter: drop-shadow(0 2px 6px rgba(0,0,0,0.15));
+        }
+        
+        .notes-title {
+            font-size: 12px;
+            font-weight: bold;
+            fill: #2c3e50;
+        }
+        
+        .notes-text {
+            font-size: 11px;
+            fill: #555;
+        }
+        
+        .server-box {
+            fill: none;
+            stroke: #3498db;
+            stroke-width: 3;
+            stroke-dasharray: 10, 5;
+            opacity: 0.5;
+        }
+        
+        .legend {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255,255,255,0.95);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            max-width: 250px;
+            z-index: 1000;
+        }
+        
+        .legend h2 {
+            margin: 0 0 15px 0;
+            color: #2c3e50;
+            font-size: 18px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin: 8px 0;
+            font-size: 13px;
+            color: #555;
+        }
+        
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin-right: 10px;
+            border: 2px solid white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        @media (max-width: 768px) {
+            .legend {
+                font-size: 11px;
+                padding: 10px;
+                max-width: 200px;
+            }
+            
+            .legend h2 {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <div class="legend">
+            <h2>🚀 Komponen</h2>
+            <div class="legend-item">
+                <div class="legend-color" style="background: linear-gradient(145deg, #ff9a9e, #fad0c4);"></div>
+                <span>Klien/Pengguna</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: linear-gradient(145deg, #ffecd2, #fcb69f);"></div>
+                <span>Cloudflare</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: linear-gradient(145deg, #a1c4fd, #c2e9fb);"></div>
+                <span>Nginx</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: linear-gradient(145deg, #ffdde1, #ee9ca7);"></div>
+                <span>PM2</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: linear-gradient(145deg, #84fab0, #8fd3f4);"></div>
+                <span>Next.js</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: linear-gradient(145deg, #cfd9df, #e2ebf0);"></div>
+                <span>MySQL</span>
+            </div>
+        </div>
+        <svg id="architecture-svg"></svg>
+    </div>
+
+    <script>
+        const nodes = [
+            {
+                id: 'user',
+                label: 'Pengguna/Klien',
+                subtitle: 'Pelayar Web',
+                icon: '👤',
+                color: 'url(#gradient-user)',
+                x: 250,
+                y: 80,
+                notesX: 380,
+                notes: [
+                    'Membuat permintaan HTTPS',
+                    'Menerima HTML/CSS/JS',
+                    'Berinteraksi dengan aplikasi'
+                ]
+            },
+            {
+                id: 'cloudflare',
+                label: 'Cloudflare',
+                subtitle: 'CDN & Keselamatan',
+                icon: '☁️',
+                color: 'url(#gradient-cloudflare)',
+                x: 250,
+                y: 220,
+                notesX: 380,
+                notes: [
+                    'Pengurusan DNS',
+                    'Sijil SSL/TLS',
+                    'Perlindungan DDoS',
+                    'Caching Kandungan',
+                    'Firewall Aplikasi Web'
+                ]
+            },
+            {
+                id: 'nginx',
+                label: 'Nginx',
+                subtitle: 'Reverse Proxy',
+                icon: '🔀',
+                color: 'url(#gradient-nginx)',
+                x: 250,
+                y: 400,
+                notesX: 380,
+                notes: [
+                    'Reverse proxy ke Next.js',
+                    'Penamatan SSL',
+                    'Pengimbangan beban',
+                    'Penyampaian fail statik',
+                    'Penghalaan permintaan'
+                ]
+            },
+            {
+                id: 'pm2',
+                label: 'PM2',
+                subtitle: 'Pengurus Proses',
+                icon: '⚙️',
+                color: 'url(#gradient-pm2)',
+                x: 180,
+                y: 560,
+                notesX: 20,
+                notes: [
+                    'Pemantauan proses',
+                    'Mula semula auto bila crash',
+                    'Pengurusan log',
+                    'Muat semula tanpa downtime',
+                    'Sokongan mod kelompok'
+                ]
+            },
+            {
+                id: 'nextjs',
+                label: 'Next.js',
+                subtitle: 'Port 3000',
+                icon: '⚡',
+                color: 'url(#gradient-nextjs)',
+                x: 380,
+                y: 560,
+                notesX: 520,
+                notes: [
+                    'Rendering Sisi Pelayan (SSR)',
+                    'Penjanaan Laman Statik (SSG)',
+                    'Laluan API',
+                    'Frontend React',
+                    'Pengoptimuman Imej'
+                ]
+            },
+            {
+                id: 'mysql',
+                label: 'MySQL',
+                subtitle: 'Pangkalan Data',
+                icon: '🗄️',
+                color: 'url(#gradient-mysql)',
+                x: 280,
+                y: 740,
+                notesX: 420,
+                notes: [
+                    'Kegigihan data',
+                    'Penyimpanan data relasi',
+                    'Pertanyaan SQL',
+                    'Sokongan transaksi',
+                    'Integrasi ORM'
+                ]
+            }
+        ];
+
+        const links = [
+            { source: 'user', target: 'cloudflare' },
+            { source: 'cloudflare', target: 'nginx' },
+            { source: 'nginx', target: 'nextjs' },
+            { source: 'pm2', target: 'nextjs', dashed: true },
+            { source: 'nextjs', target: 'mysql', bidirectional: true }
+        ];
+
+        const svg = d3.select('#architecture-svg');
+        const width = 1200;
+        const height = 900;
+
+        svg.attr('viewBox', `0 0 ${width} ${height}`);
+
+        const defs = svg.append('defs');
+
+        const gradients = [
+            { id: 'gradient-user', colors: ['#ff9a9e', '#fad0c4'] },
+            { id: 'gradient-cloudflare', colors: ['#ffecd2', '#fcb69f'] },
+            { id: 'gradient-nginx', colors: ['#a1c4fd', '#c2e9fb'] },
+            { id: 'gradient-pm2', colors: ['#ffdde1', '#ee9ca7'] },
+            { id: 'gradient-nextjs', colors: ['#84fab0', '#8fd3f4'] },
+            { id: 'gradient-mysql', colors: ['#cfd9df', '#e2ebf0'] }
+        ];
+
+        gradients.forEach(g => {
+            const gradient = defs.append('linearGradient')
+                .attr('id', g.id)
+                .attr('x1', '0%')
+                .attr('y1', '0%')
+                .attr('x2', '100%')
+                .attr('y2', '100%');
+            
+            gradient.append('stop')
+                .attr('offset', '0%')
+                .attr('stop-color', g.colors[0]);
+            
+            gradient.append('stop')
+                .attr('offset', '100%')
+                .attr('stop-color', g.colors[1]);
+        });
+
+        svg.append('rect')
+            .attr('class', 'server-box')
+            .attr('x', 80)
+            .attr('y', 360)
+            .attr('width', 400)
+            .attr('height', 450)
+            .attr('rx', 15);
+
+        svg.append('text')
+            .attr('x', 280)
+            .attr('y', 385)
+            .attr('text-anchor', 'middle')
+            .attr('fill', '#3498db')
+            .attr('font-size', '16px')
+            .attr('font-weight', 'bold')
+            .text('🖥️ Pelayan Ubuntu 24');
+
+        const linkGroup = svg.append('g').attr('class', 'links');
+
+        links.forEach(link => {
+            const sourceNode = nodes.find(n => n.id === link.source);
+            const targetNode = nodes.find(n => n.id === link.target);
+
+            const markerId = `arrow-${link.source}-${link.target}`;
+            defs.append('marker')
+                .attr('id', markerId)
+                .attr('viewBox', '0 0 10 10')
+                .attr('refX', 8)
+                .attr('refY', 5)
+                .attr('markerWidth', 6)
+                .attr('markerHeight', 6)
+                .attr('orient', 'auto')
+                .append('path')
+                .attr('d', 'M 0 0 L 10 5 L 0 10 z')
+                .attr('fill', '#3498db');
+
+            linkGroup.append('line')
+                .attr('class', link.dashed ? 'link link-animated' : 'link')
+                .attr('x1', sourceNode.x)
+                .attr('y1', sourceNode.y)
+                .attr('x2', targetNode.x)
+                .attr('y2', targetNode.y)
+                .attr('marker-end', `url(#${markerId})`)
+                .style('stroke-dasharray', link.dashed ? '10,5' : 'none');
+
+            if (link.bidirectional) {
+                const backMarkerId = `arrow-back-${link.source}-${link.target}`;
+                defs.append('marker')
+                    .attr('id', backMarkerId)
+                    .attr('viewBox', '0 0 10 10')
+                    .attr('refX', 2)
+                    .attr('refY', 5)
+                    .attr('markerWidth', 6)
+                    .attr('markerHeight', 6)
+                    .attr('orient', 'auto')
+                    .append('path')
+                    .attr('d', 'M 10 0 L 0 5 L 10 10 z')
+                    .attr('fill', '#3498db');
+
+                linkGroup.append('line')
+                    .attr('class', 'link')
+                    .attr('x1', targetNode.x)
+                    .attr('y1', targetNode.y)
+                    .attr('x2', sourceNode.x)
+                    .attr('y2', sourceNode.y)
+                    .attr('marker-end', `url(#${backMarkerId})`);
+            }
+        });
+
+        const nodeGroup = svg.append('g').attr('class', 'nodes');
+
+        const nodeElements = nodeGroup.selectAll('.node-group')
+            .data(nodes)
+            .enter()
+            .append('g')
+            .attr('class', 'node-group')
+            .attr('transform', d => `translate(${d.x}, ${d.y})`);
+
+        nodeElements.append('circle')
+            .attr('class', 'node-circle')
+            .attr('r', 60)
+            .attr('fill', d => d.color)
+            .on('mouseover', function() {
+                d3.select(this)
+                    .transition()
+                    .duration(200)
+                    .attr('r', 70);
+            })
+            .on('mouseout', function() {
+                d3.select(this)
+                    .transition()
+                    .duration(200)
+                    .attr('r', 60);
+            });
+
+        nodeElements.append('text')
+            .attr('class', 'node-icon')
+            .attr('y', -15)
+            .text(d => d.icon);
+
+        nodeElements.append('text')
+            .attr('class', 'node-text')
+            .attr('y', 15)
+            .text(d => d.label);
+
+        nodeElements.append('text')
+            .attr('class', 'node-subtitle')
+            .attr('y', 30)
+            .text(d => d.subtitle);
+
+        // Add notes boxes
+        const notesGroup = svg.append('g').attr('class', 'notes');
+
+        nodes.forEach(node => {
+            const boxHeight = node.notes.length * 18 + 30;
+            const boxWidth = 220;
+            
+            // Notes box background
+            notesGroup.append('rect')
+                .attr('class', 'notes-box')
+                .attr('x', node.notesX)
+                .attr('y', node.y - boxHeight / 2)
+                .attr('width', boxWidth)
+                .attr('height', boxHeight);
+            
+            // Notes title
+            notesGroup.append('text')
+                .attr('class', 'notes-title')
+                .attr('x', node.notesX + 10)
+                .attr('y', node.y - boxHeight / 2 + 18)
+                .text('Ciri-ciri Utama:');
+            
+            // Notes items
+            node.notes.forEach((note, i) => {
+                notesGroup.append('text')
+                    .attr('class', 'notes-text')
+                    .attr('x', node.notesX + 10)
+                    .attr('y', node.y - boxHeight / 2 + 38 + (i * 18))
+                    .text(`✓ ${note}`);
+            });
+        });
+
+        nodeElements.style('opacity', 0)
+            .transition()
+            .duration(800)
+            .delay((d, i) => i * 150)
+            .style('opacity', 1);
+
+        notesGroup.selectAll('rect, text')
+            .style('opacity', 0)
+            .transition()
+            .duration(800)
+            .delay((d, i) => 900)
+            .style('opacity', 1);
+    </script>
+</body>
+</html>

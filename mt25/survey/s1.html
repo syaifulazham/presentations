@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Malaysia Techlympics 2025 - Survey Analysis Report</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            padding: 40px;
+            background: #f8f9fa;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 12px rgba(0,0,0,0.15);
+        }
+        
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .stat-label {
+            font-size: 0.9em;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .section {
+            padding: 40px;
+        }
+        
+        .section-title {
+            font-size: 1.8em;
+            margin-bottom: 25px;
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+        
+        .chart-container {
+            position: relative;
+            margin-bottom: 40px;
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .chart-wrapper {
+            position: relative;
+            height: 400px;
+        }
+        
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .insight-box {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+        
+        .insight-box h3 {
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+        
+        .insight-box ul {
+            list-style-position: inside;
+            line-height: 1.8;
+        }
+        
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .skill-item {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .skill-name {
+            font-weight: 600;
+        }
+        
+        .skill-percent {
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+        
+        @media (max-width: 768px) {
+            .two-column {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 1.8em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏆 Malaysia Techlympics 2025</h1>
+            <p>Analisis Tinjauan Kemahiran STI (Sains, Teknologi & Inovasi)</p>
+            <p style="font-size: 0.9em; margin-top: 10px; opacity: 0.8;">Survey Results Analysis Report</p>
+        </div>
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number">4,789</div>
+                <div class="stat-label">Total Peserta</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">54.5%</div>
+                <div class="stat-label">Lelaki</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">45.5%</div>
+                <div class="stat-label">Perempuan</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">98.6%</div>
+                <div class="stat-label">Sekolah</div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2 class="section-title">📊 Profil Demografi Peserta</h2>
+            
+            <div class="two-column">
+                <div class="chart-container">
+                    <h3 style="text-align: center; margin-bottom: 20px; color: #667eea;">Tahap Pendidikan</h3>
+                    <div class="chart-wrapper">
+                        <canvas id="educationChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="chart-container">
+                    <h3 style="text-align: center; margin-bottom: 20px; color: #667eea;">Kumpulan Umur</h3>
+                    <div class="chart-wrapper">
+                        <canvas id="ageChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section" style="background: #f8f9fa;">
+            <h2 class="section-title">💡 Tahap Kemahiran STI Semasa (Q4)</h2>
+            <p style="margin-bottom: 20px; font-style: italic; color: #666;">"Sejauh manakah tahap kemahiran STI anda pada masa ini?"</p>
+            
+            <div class="chart-container">
+                <div class="chart-wrapper">
+                    <canvas id="q4Chart"></canvas>
+                </div>
+            </div>
+            
+            <div class="insight-box">
+                <h3>🔍 Penemuan Utama:</h3>
+                <ul>
+                    <li><strong>37.1%</strong> peserta mempunyai kemahiran sederhana</li>
+                    <li><strong>29.8%</strong> hanya mempunyai kemahiran asas</li>
+                    <li><strong>24.8%</strong> mempunyai kemahiran tinggi atau sangat tinggi</li>
+                    <li><strong>8.4%</strong> tiada kemahiran langsung - memerlukan perhatian khusus</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2 class="section-title">🎯 Tahap Keyakinan Aplikasi Kemahiran (Q5)</h2>
+            <p style="margin-bottom: 20px; font-style: italic; color: #666;">"Sejauh manakah anda bersetuju dengan kenyataan berikut: 'Saya yakin untuk mengaplikasikan kemahiran STI dalam situasi sebenar'"</p>
+            
+            <div class="chart-container">
+                <div class="chart-wrapper">
+                    <canvas id="q5Chart"></canvas>
+                </div>
+            </div>
+            
+            <div class="insight-box" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                <h3>✨ Analisis Keyakinan:</h3>
+                <ul>
+                    <li><strong>85.7%</strong> peserta berasa yakin (Bersetuju + Sangat bersetuju)</li>
+                    <li><strong>13.2%</strong> neutral - mungkin memerlukan sokongan tambahan</li>
+                    <li>Hanya <strong>1.1%</strong> kurang yakin - peratusan yang sangat rendah</li>
+                    <li>Tahap keyakinan yang tinggi menunjukkan peserta bersedia untuk pembelajaran praktikal</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="section" style="background: #f8f9fa;">
+            <h2 class="section-title">🚀 Kemahiran STI Yang Diharapkan (Q6)</h2>
+            <p style="margin-bottom: 20px; font-style: italic; color: #666;">"Apakah kemahiran STI yang anda harapkan untuk diperoleh atau ditingkatkan sepanjang Malaysia Techlympics 2025?"</p>
+            
+            <div class="skills-grid">
+                <div class="skill-item">
+                    <span class="skill-name">Teknologi</span>
+                    <span class="skill-percent">78.0%</span>
+                </div>
+                <div class="skill-item">
+                    <span class="skill-name">Penyelesaian Masalah</span>
+                    <span class="skill-percent">74.7%</span>
+                </div>
+                <div class="skill-item">
+                    <span class="skill-name">Inovasi</span>
+                    <span class="skill-percent">74.0%</span>
+                </div>
+                <div class="skill-item">
+                    <span class="skill-name">Pemikiran Kritikal</span>
+                    <span class="skill-percent">68.4%</span>
+                </div>
+                <div class="skill-item">
+                    <span class="skill-name">Pembangunan Projek</span>
+                    <span class="skill-percent">65.0%</span>
+                </div>
+                <div class="skill-item">
+                    <span class="skill-name">Sains Asas</span>
+                    <span class="skill-percent">62.0%</span>
+                </div>
+            </div>
+            
+            <div class="chart-container" style="margin-top: 30px;">
+                <div class="chart-wrapper">
+                    <canvas id="q6Chart"></canvas>
+                </div>
+            </div>
+            
+            <div class="insight-box" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
+                <h3>🎓 Implikasi Untuk Program:</h3>
+                <ul>
+                    <li>Fokus utama: <strong>Teknologi, Penyelesaian Masalah, dan Inovasi</strong> (>74% permintaan)</li>
+                    <li>Integrasi kemahiran berbilang: Peserta mahukan pendekatan holistik</li>
+                    <li>Pembangunan projek sebagai metodologi pembelajaran yang berkesan</li>
+                    <li>Keperluan asas sains masih relevan untuk 62% peserta</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2 class="section-title">📈 Kesimpulan & Cadangan</h2>
+            
+            <div style="background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                <h3 style="color: #667eea; margin-bottom: 15px;">Ringkasan Eksekutif:</h3>
+                <p style="line-height: 1.8; margin-bottom: 15px;">
+                    Survey ini melibatkan <strong>4,789 peserta</strong> dari seluruh Malaysia dengan taburan gender yang seimbang. 
+                    Majoriti peserta adalah dari sekolah rendah (55.6%) dan menengah (43.3%), menunjukkan kejayaan program 
+                    dalam menjangkau pelajar peringkat awal.
+                </p>
+                
+                <h3 style="color: #667eea; margin-bottom: 15px; margin-top: 25px;">Kekuatan Program:</h3>
+                <ul style="line-height: 1.8; margin-left: 20px;">
+                    <li>Tahap keyakinan peserta yang <strong>sangat tinggi (85.7%)</strong> dalam mengaplikasi kemahiran</li>
+                    <li>Permintaan kuat untuk kemahiran utama abad ke-21</li>
+                    <li>Jangkauan yang luas merentas kumpulan umur dan negeri</li>
+                </ul>
+                
+                <h3 style="color: #667eea; margin-bottom: 15px; margin-top: 25px;">Cadangan Strategik:</h3>
+                <ul style="line-height: 1.8; margin-left: 20px;">
+                    <li><strong>Modul Pembezaan:</strong> Bangunkan trek berbeza untuk tahap kemahiran yang berbeza</li>
+                    <li><strong>Pembelajaran Berasaskan Projek:</strong> Fokus pada aplikasi praktikal kemahiran</li>
+                    <li><strong>Sokongan Tambahan:</strong> Program khas untuk 38.2% peserta dengan kemahiran rendah/tiada</li>
+                    <li><strong>Pendekatan Holistik:</strong> Integrasikan teknologi, inovasi, dan penyelesaian masalah</li>
+                    <li><strong>Bimbingan Berterusan:</strong> Untuk 13.2% yang masih neutral tentang keyakinan mereka</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Chart configurations
+        const chartColors = {
+            primary: ['#667eea', '#764ba2', '#f093fb', '#f5576c', '#4facfe', '#00f2fe'],
+            gradient1: ['#667eea', '#764ba2'],
+            gradient2: ['#f093fb', '#f5576c'],
+            gradient3: ['#4facfe', '#00f2fe']
+        };
+        
+        // Education Level Chart
+        const eduCtx = document.getElementById('educationChart').getContext('2d');
+        new Chart(eduCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Sekolah Rendah', 'Sekolah Menengah', 'Belia'],
+                datasets: [{
+                    data: [2665, 2073, 51],
+                    backgroundColor: ['#667eea', '#764ba2', '#f093fb'],
+                    borderWidth: 2,
+                    borderColor: '#fff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 15,
+                            font: { size: 12 }
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = ((context.parsed / total) * 100).toFixed(1);
+                                return context.label + ': ' + context.parsed + ' (' + percentage + '%)';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        
+        // Age Group Chart
+        const ageCtx = document.getElementById('ageChart').getContext('2d');
+        new Chart(ageCtx, {
+            type: 'bar',
+            data: {
+                labels: ['7-12 tahun', '13-15 tahun', '16-17 tahun', '18+ tahun'],
+                datasets: [{
+                    label: 'Bilangan Peserta',
+                    data: [2650, 1288, 799, 52],
+                    backgroundColor: ['#667eea', '#764ba2', '#f093fb', '#f5576c'],
+                    borderRadius: 10
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const total = 4789;
+                                const percentage = ((context.parsed.y / total) * 100).toFixed(1);
+                                return 'Peserta: ' + context.parsed.y + ' (' + percentage + '%)';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            font: { size: 11 }
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            font: { size: 11 }
+                        }
+                    }
+                }
+            }
+        });
+        
+        // Q4 Chart - Skill Level
+        const q4Ctx = document.getElementById('q4Chart').getContext('2d');
+        new Chart(q4Ctx, {
+            type: 'bar',
+            data: {
+                labels: [
+                    'Tiada kemahiran langsung',
+                    'Sedikit kemahiran asas',
+                    'Kemahiran sederhana',
+                    'Kemahiran tinggi',
+                    'Kemahiran amat tinggi'
+                ],
+                datasets: [{
+                    label: 'Bilangan Peserta',
+                    data: [403, 1427, 1775, 760, 424],
+                    backgroundColor: ['#f5576c', '#f093fb', '#764ba2', '#667eea', '#4facfe'],
+                    borderRadius: 8
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const total = 4789;
+                                const percentage = ((context.parsed.x / total) * 100).toFixed(1);
+                                return 'Peserta: ' + context.parsed.x + ' (' + percentage + '%)';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        ticks: { font: { size: 11 } }
+                    },
+                    y: {
+                        ticks: { font: { size: 11 } }
+                    }
+                }
+            }
+        });
+        
+        // Q5 Chart - Confidence Level
+        const q5Ctx = document.getElementById('q5Chart').getContext('2d');
+        new Chart(q5Ctx, {
+            type: 'pie',
+            data: {
+                labels: [
+                    'Sangat bersetuju',
+                    'Bersetuju',
+                    'Neutral',
+                    'Tidak bersetuju',
+                    'Sangat tidak bersetuju'
+                ],
+                datasets: [{
+                    data: [1359, 2743, 632, 34, 18],
+                    backgroundColor: ['#4facfe', '#667eea', '#764ba2', '#f093fb', '#f5576c'],
+                    borderWidth: 2,
+                    borderColor: '#fff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: {
+                            padding: 15,
+                            font: { size: 12 }
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = ((context.parsed / total) * 100).toFixed(1);
+                                return context.label + ': ' + context.parsed + ' (' + percentage + '%)';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        
+        // Q6 Chart - Desired Skills
+        const q6Ctx = document.getElementById('q6Chart').getContext('2d');
+        new Chart(q6Ctx, {
+            type: 'bar',
+            data: {
+                labels: [
+                    'Teknologi',
+                    'Penyelesaian Masalah',
+                    'Inovasi',
+                    'Pemikiran Kritikal',
+                    'Pembangunan Projek',
+                    'Sains Asas'
+                ],
+                datasets: [{
+                    label: 'Bilangan Peserta',
+                    data: [3734, 3579, 3546, 3277, 3114, 2967],
+                    backgroundColor: ['#667eea', '#764ba2', '#f093fb', '#f5576c', '#4facfe', '#00f2fe'],
+                    borderRadius: 10
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const total = 4789;
+                                const percentage = ((context.parsed.y / total) * 100).toFixed(1);
+                                return 'Peserta: ' + context.parsed.y + ' (' + percentage + '%)';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            font: { size: 11 }
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            font: { size: 11 }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

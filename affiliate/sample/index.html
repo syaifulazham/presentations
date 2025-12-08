@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Insurance Affiliate Program - Partner With Us</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .floating-shapes {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .shape {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float 20s infinite ease-in-out;
+        }
+
+        .shape:nth-child(1) { width: 80px; height: 80px; left: 10%; top: 20%; animation-delay: 0s; }
+        .shape:nth-child(2) { width: 120px; height: 120px; right: 15%; top: 30%; animation-delay: 2s; }
+        .shape:nth-child(3) { width: 60px; height: 60px; left: 20%; bottom: 25%; animation-delay: 4s; }
+        .shape:nth-child(4) { width: 100px; height: 100px; right: 25%; bottom: 20%; animation-delay: 6s; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-30px) rotate(180deg); }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-content {
+            text-align: center;
+            color: white;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .subtitle {
+            font-size: 1.4rem;
+            margin-bottom: 40px;
+            opacity: 0.95;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 18px 50px;
+            background: white;
+            color: #667eea;
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+            background: #f0f0f0;
+        }
+
+        .advantages-section {
+            background: white;
+            padding: 80px 20px;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            color: #333;
+            margin-bottom: 60px;
+            position: relative;
+        }
+
+        .section-title:after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            margin: 20px auto 0;
+            border-radius: 2px;
+        }
+
+        .advantages-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .advantage-card {
+            padding: 40px 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .advantage-card:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.9) 0%, rgba(118, 75, 162, 0.9) 100%);
+            transition: all 0.3s ease;
+            z-index: 1;
+        }
+
+        .advantage-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        .advantage-card:hover:before {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.85) 0%, rgba(118, 75, 162, 0.85) 100%);
+        }
+
+        .card-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .card-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .card-description {
+            font-size: 1rem;
+            line-height: 1.6;
+            opacity: 0.95;
+        }
+
+        .stats-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 80px 20px;
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            max-width: 1000px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .stat-item {
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .final-cta {
+            background: #f8f9fa;
+            padding: 80px 20px;
+            text-align: center;
+        }
+
+        .final-cta h2 {
+            font-size: 2.5rem;
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .advantages-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <section class="hero">
+        <div class="floating-shapes">
+            <div class="shape"></div>
+            <div class="shape"></div>
+            <div class="shape"></div>
+            <div class="shape"></div>
+        </div>
+        <div class="container">
+            <div class="hero-content">
+                <h1>Join Our Insurance Affiliate Program</h1>
+                <p class="subtitle">Partner with leading insurance providers and earn competitive commissions</p>
+                <button class="cta-button" onclick="window.location.href='join.html'">Join Us Today</button>
+            </div>
+        </div>
+    </section>
+
+    <section class="advantages-section">
+        <div class="container">
+            <h2 class="section-title">Why Partner With Us?</h2>
+            <div class="advantages-grid">
+                <div class="advantage-card" style="background-image: url('https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?auto=format&fit=crop&w=800&q=80');">
+                    <div class="card-content">
+                        <span class="card-icon">💰</span>
+                        <h3 class="card-title">Competitive Commissions</h3>
+                        <p class="card-description">Earn industry-leading commissions on every policy sold. Our tiered structure rewards top performers with even higher rates.</p>
+                    </div>
+                </div>
+
+                <div class="advantage-card" style="background-image: url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80');">
+                    <div class="card-content">
+                        <span class="card-icon">🏢</span>
+                        <h3 class="card-title">Multiple Principles</h3>
+                        <p class="card-description">Access policies from top-rated insurance companies across various categories - auto, home, life, health, and business insurance.</p>
+                    </div>
+                </div>
+
+                <div class="advantage-card" style="background-image: url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80');">
+                    <div class="card-content">
+                        <span class="card-icon">📊</span>
+                        <h3 class="card-title">Real-Time Dashboard</h3>
+                        <p class="card-description">Track your performance, commissions, and leads with our intuitive affiliate dashboard. Get insights to optimize your strategy.</p>
+                    </div>
+                </div>
+
+                <div class="advantage-card" style="background-image: url('https://images.unsplash.com/photo-1533750516457-a7f992034fec?auto=format&fit=crop&w=800&q=80');">
+                    <div class="card-content">
+                        <span class="card-icon">🎯</span>
+                        <h3 class="card-title">Marketing Support</h3>
+                        <p class="card-description">Access professional marketing materials, banners, email templates, and landing pages to maximize your conversions.</p>
+                    </div>
+                </div>
+
+                <div class="advantage-card" style="background-image: url('https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=800&q=80');">
+                    <div class="card-content">
+                        <span class="card-icon">⚡</span>
+                        <h3 class="card-title">Fast Payouts</h3>
+                        <p class="card-description">Receive your commissions on time, every time. Multiple payment options available with low minimum thresholds.</p>
+                    </div>
+                </div>
+
+                <div class="advantage-card" style="background-image: url('https://images.unsplash.com/photo-1521791136064-7986c2920216?auto=format&fit=crop&w=800&q=80');">
+                    <div class="card-content">
+                        <span class="card-icon">🤝</span>
+                        <h3 class="card-title">Dedicated Support</h3>
+                        <p class="card-description">Our affiliate success team is here to help you succeed. Get personalized guidance, training, and ongoing support.</p>
+                    </div>
+                </div>
+
+                <div class="advantage-card" style="background-image: url('https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&w=800&q=80');">
+                    <div class="card-content">
+                        <span class="card-icon">🔒</span>
+                        <h3 class="card-title">Trusted Brands</h3>
+                        <p class="card-description">Promote policies from reputable insurance companies your audience already knows and trusts.</p>
+                    </div>
+                </div>
+
+                <div class="advantage-card" style="background-image: url('https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=800&q=80');">
+                    <div class="card-content">
+                        <span class="card-icon">📈</span>
+                        <h3 class="card-title">Recurring Income</h3>
+                        <p class="card-description">Earn commissions not just on new policies, but also on renewals. Build a sustainable, long-term income stream.</p>
+                    </div>
+                </div>
+
+                <div class="advantage-card" style="background-image: url('https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=800&q=80');">
+                    <div class="card-content">
+                        <span class="card-icon">🎓</span>
+                        <h3 class="card-title">Training & Resources</h3>
+                        <p class="card-description">Access comprehensive training materials, webinars, and best practices to enhance your selling skills.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="stats-section">
+        <div class="container">
+            <h2 class="section-title" style="color: white;">Our Success Story</h2>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-number">5,000+</span>
+                    <span class="stat-label">Active Affiliates</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">$10M+</span>
+                    <span class="stat-label">Commissions Paid</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">50+</span>
+                    <span class="stat-label">Insurance Partners</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">98%</span>
+                    <span class="stat-label">Satisfaction Rate</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="final-cta">
+        <div class="container">
+            <h2>Ready to Start Earning?</h2>
+            <p class="subtitle" style="color: #666; margin-bottom: 40px;">Join thousands of successful affiliates promoting trusted insurance products</p>
+            <button class="cta-button" onclick="window.location.href='join.html'">Join Us Now</button>
+        </div>
+    </section>
+</body>
+</html>
